@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIRE Number Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F6F4EE;
+    --bg-raised: #FFFFFF;
+    --ink: #1B211F;
+    --ink-soft: #565F5B;
+    --line: #D9D4C6;
+    --line-strong: #B9B29E;
+    --accent: #8A6A34;
+    --accent-ink: #5C4522;
+    --growth: #2F5233;
+    --eq: #8A6A34;
+    --bd: #6E7B9E;
+    --cash: #A9A18C;
+    --reit: #6B4E3D;
+    --focus: #2F5233;
+    --shadow: 0 1px 0 rgba(27,33,31,0.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14181A;
+      --bg-raised: #1B2023;
+      --ink: #E9E6DC;
+      --ink-soft: #9CA39C;
+      --line: #333A38;
+      --line-strong: #454E4A;
+      --accent: #C9A15C;
+      --accent-ink: #E4C583;
+      --growth: #7FAE85;
+      --eq: #C9A15C;
+      --bd: #93A3CC;
+      --cash: #8A8574;
+      --reit: #B08768;
+      --focus: #7FAE85;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14181A;
+    --bg-raised: #1B2023;
+    --ink: #E9E6DC;
+    --ink-soft: #9CA39C;
+    --line: #333A38;
+    --line-strong: #454E4A;
+    --accent: #C9A15C;
+    --accent-ink: #E4C583;
+    --growth: #7FAE85;
+    --eq: #C9A15C;
+    --bd: #93A3CC;
+    --cash: #8A8574;
+    --reit: #B08768;
+    --focus: #7FAE85;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 48px 20px 64px;
+  }
+
+  .sheet {
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  header.masthead {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--line-strong);
+    padding-bottom: 18px;
+    margin-bottom: 6px;
+  }
+  header.masthead h1 {
+    font-family: 'Lora', Georgia, serif;
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  header.masthead .tag {
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+  }
+
+  p.lede {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    max-width: 46ch;
+    margin: 18px 0 34px;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .row label {
+    font-size: 0.92rem;
+    color: var(--ink);
+  }
+  .row .hint {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    margin-top: 2px;
+  }
+  .row .field {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .row .field .prefix, .row .field .suffix {
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+  }
+  input[type="number"] {
+    width: 130px;
+    text-align: right;
+    font-family: 'Lora', Georgia, serif;
+    font-variant-numeric: tabular-nums;
+    font-size: 1.05rem;
+    color: var(--ink);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid transparent;
+    padding: 2px 2px 4px;
+    outline: none;
+  }
+  input[type="number"]:focus {
+    border-bottom: 1px solid var(--focus);
+  }
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .cta-row {
+    padding-top: 26px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  button.primary {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    background: var(--ink);
+    color: var(--bg);
+    border: none;
+    padding: 12px 22px;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+  }
+  button.primary:hover { opacity: 0.85; }
+  button.primary:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  section.result {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid var(--line-strong);
+    display: none;
+  }
+  section.result.visible {
+    display: block;
+    animation: rise 0.5s ease;
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-label {
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .result-number {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 3rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .result-sub {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
+  .savings-prompt {
+    margin-top: 30px;
+    padding: 22px 0 0;
+  }
+  .savings-prompt .row { border-bottom: 1px solid var(--line); }
+
+  section.plan {
+    margin-top: 8px;
+    display: none;
+  }
+  section.plan.visible { display: block; animation: rise 0.5s ease; }
+
+  .timeline {
+    padding: 22px 0 10px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .timeline .years {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1.9rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .timeline .years-label {
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+  }
+
+  .profile-toggle {
+    display: flex;
+    gap: 0;
+    margin: 26px 0 4px;
+    border: 1px solid var(--line-strong);
+  }
+  .profile-toggle button {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 10px 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+    border-right: 1px solid var(--line-strong);
+  }
+  .profile-toggle button:last-child { border-right: none; }
+  .profile-toggle button.active {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .profile-note {
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    margin: 10px 0 26px;
+    line-height: 1.5;
+  }
+
+  .alloc-title {
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+  }
+  .alloc {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .alloc-item {
+    display: grid;
+    grid-template-columns: 90px 1fr 42px;
+    align-items: center;
+    gap: 12px;
+  }
+  .alloc-item .name { font-size: 0.85rem; }
+  .alloc-item .pct { font-size: 0.85rem; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-soft); }
+  .bar-track {
+    height: 8px;
+    background: var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    width: 0%;
+    transition: width 0.6s ease;
+  }
+
+  footer.disclaimer {
+    margin-top: 44px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-size: 0.76rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 480px) {
+    .result-number { font-size: 2.3rem; }
+    .row { flex-wrap: wrap; }
+    input[type="number"] { width: 110px; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header class="masthead">
+    <h1>FIRE Number</h1>
+    <span class="tag"><a href="index.html" style="color:inherit;text-decoration:none;border-bottom:1px solid var(--line-strong);">← uwaism.com</a></span>
+  </header>
+
+  <p class="lede">Estimate the portfolio size needed to cover your annual spending indefinitely, then see how a monthly savings habit gets you there.</p>
+
+  <div class="row">
+    <div>
+      <label for="savings">Current savings</label>
+      <span class="hint">Total invested assets today</span>
+    </div>
+    <div class="field">
+      <span class="prefix">$</span>
+      <input type="number" id="savings" value="20000" min="0" step="1000">
+    </div>
+  </div>
+
+  <div class="row">
+    <div>
+      <label for="expenses">Annual expenses</label>
+      <span class="hint">What you spend per year in retirement</span>
+    </div>
+    <div class="field">
+      <span class="prefix">$</span>
+      <input type="number" id="expenses" value="45000" min="0" step="1000">
+    </div>
+  </div>
+
+  <div class="row">
+    <div>
+      <label for="return">Expected annual return</label>
+      <span class="hint">Long-run average, before withdrawals</span>
+    </div>
+    <div class="field">
+      <input type="number" id="return" value="7" min="0" max="20" step="0.1">
+      <span class="suffix">%</span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div>
+      <label for="withdrawal">Withdrawal rate</label>
+      <span class="hint">Share of the portfolio drawn each year</span>
+    </div>
+    <div class="field">
+      <input type="number" id="withdrawal" value="4" min="1" max="10" step="0.1">
+      <span class="suffix">%</span>
+    </div>
+  </div>
+
+  <div class="cta-row">
+    <button class="primary" id="calcBtn">Calculate my FIRE number</button>
+  </div>
+
+  <section class="result" id="resultSection">
+    <div class="result-label">Your FIRE number</div>
+    <div class="result-number" id="fireNumber">$0</div>
+    <div class="result-sub" id="fireSub"></div>
+
+    <div class="savings-prompt">
+      <div class="row">
+        <div>
+          <label for="monthly">Monthly savings</label>
+          <span class="hint">How much you can invest each month</span>
+        </div>
+        <div class="field">
+          <span class="prefix">$</span>
+          <input type="number" id="monthly" value="500" min="0" step="50">
+        </div>
+      </div>
+      <div class="cta-row">
+        <button class="primary" id="planBtn">Build my plan</button>
+      </div>
+    </div>
+
+    <section class="plan" id="planSection">
+      <div class="timeline">
+        <div>
+          <div class="years" id="yearsToFire">—</div>
+          <div class="years-label">years to reach FIRE</div>
+        </div>
+        <div style="text-align:right">
+          <div class="years" id="totalContributed">—</div>
+          <div class="years-label">from contributions vs. growth</div>
+        </div>
+      </div>
+
+      <div class="profile-toggle" id="profileToggle">
+        <button data-profile="conservative">Conservative</button>
+        <button data-profile="moderate">Moderate</button>
+        <button data-profile="aggressive">Aggressive</button>
+      </div>
+      <div class="profile-note" id="profileNote"></div>
+
+      <div class="alloc-title">Illustrative model allocation</div>
+      <div class="alloc" id="allocList"></div>
+    </section>
+  </section>
+
+  <footer class="disclaimer">
+    This calculator is provided for general educational purposes only. It uses simplified, generic assumptions and model allocations — it is not personalized financial, investment, or tax advice, and it does not take the place of guidance from a licensed advisor. Actual returns, timelines, and suitable allocations vary by individual circumstances.
+  </footer>
+
+</div>
+
+<script>
+  const profiles = {
+    conservative: {
+      label: "Weighted toward capital preservation — a common starting point for shorter time horizons or lower risk tolerance.",
+      alloc: [
+        { name: "Equities", pct: 30, color: "var(--eq)" },
+        { name: "Bonds", pct: 50, color: "var(--bd)" },
+        { name: "Cash", pct: 15, color: "var(--cash)" },
+        { name: "REITs", pct: 5, color: "var(--reit)" },
+      ]
+    },
+    moderate: {
+      label: "A balanced mix often used as a default for medium time horizons — growth-oriented with some ballast.",
+      alloc: [
+        { name: "Equities", pct: 60, color: "var(--eq)" },
+        { name: "Bonds", pct: 25, color: "var(--bd)" },
+        { name: "Cash", pct: 5, color: "var(--cash)" },
+        { name: "REITs", pct: 10, color: "var(--reit)" },
+      ]
+    },
+    aggressive: {
+      label: "Growth-weighted — a common frame for longer time horizons where there's more time to ride out volatility.",
+      alloc: [
+        { name: "Equities", pct: 85, color: "var(--eq)" },
+        { name: "Bonds", pct: 5, color: "var(--bd)" },
+        { name: "Cash", pct: 0, color: "var(--cash)" },
+        { name: "REITs", pct: 10, color: "var(--reit)" },
+      ]
+    }
+  };
+
+  let currentFire = 0;
+  let currentProfile = "moderate";
+
+  function fmt(n) {
+    return "$" + Math.round(n).toLocaleString("en-US");
+  }
+
+  document.getElementById("calcBtn").addEventListener("click", () => {
+    const savings = parseFloat(document.getElementById("savings").value) || 0;
+    const expenses = parseFloat(document.getElementById("expenses").value) || 0;
+    const withdrawal = parseFloat(document.getElementById("withdrawal").value) || 4;
+
+    currentFire = expenses / (withdrawal / 100);
+
+    document.getElementById("fireNumber").textContent = fmt(currentFire);
+    const gap = currentFire - savings;
+    document.getElementById("fireSub").textContent = gap > 0
+      ? `Based on a ${withdrawal}% withdrawal rate on ${fmt(expenses)} in annual spending. You're ${fmt(gap)} away from that number today.`
+      : `Based on a ${withdrawal}% withdrawal rate on ${fmt(expenses)} in annual spending. Your current savings already cover it.`;
+
+    document.getElementById("resultSection").classList.add("visible");
+    document.getElementById("planSection").classList.remove("visible");
+  });
+
+  document.getElementById("planBtn").addEventListener("click", () => {
+    const savings = parseFloat(document.getElementById("savings").value) || 0;
+    const annualReturn = (parseFloat(document.getElementById("return").value) || 7) / 100;
+    const monthly = parseFloat(document.getElementById("monthly").value) || 0;
+
+    const monthlyRate = Math.pow(1 + annualReturn, 1/12) - 1;
+    let balance = savings;
+    let months = 0;
+    let contributed = savings;
+    const maxMonths = 720; // 60 year cap
+
+    if (balance < currentFire) {
+      while (balance < currentFire && months < maxMonths) {
+        balance = balance * (1 + monthlyRate) + monthly;
+        contributed += monthly;
+        months++;
+      }
+    }
+
+    const years = months / 12;
+    const growth = balance - contributed;
+
+    document.getElementById("yearsToFire").textContent = months >= maxMonths
+      ? "60+"
+      : years.toFixed(1);
+    document.getElementById("totalContributed").textContent =
+      contributed > 0 ? Math.round((growth / (contributed + growth)) * 100) + "% growth" : "—";
+
+    // suggest a profile based on horizon, but let the user override
+    if (months < maxMonths) {
+      currentProfile = years <= 7 ? "conservative" : years <= 18 ? "moderate" : "aggressive";
+    }
+    renderProfile(currentProfile);
+
+    document.getElementById("planSection").classList.add("visible");
+  });
+
+  function renderProfile(key) {
+    currentProfile = key;
+    document.querySelectorAll("#profileToggle button").forEach(b => {
+      b.classList.toggle("active", b.dataset.profile === key);
+    });
+    document.getElementById("profileNote").textContent = profiles[key].label;
+
+    const list = document.getElementById("allocList");
+    list.innerHTML = "";
+    profiles[key].alloc.forEach(a => {
+      const item = document.createElement("div");
+      item.className = "alloc-item";
+      item.innerHTML = `
+        <div class="name">${a.name}</div>
+        <div class="bar-track"><div class="bar-fill" style="background:${a.color}"></div></div>
+        <div class="pct">${a.pct}%</div>
+      `;
+      list.appendChild(item);
+      requestAnimationFrame(() => {
+        item.querySelector(".bar-fill").style.width = a.pct + "%";
+      });
+    });
+  }
+
+  document.getElementById("profileToggle").addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    renderProfile(btn.dataset.profile);
+  });
+</script>
+</body>
+</html>

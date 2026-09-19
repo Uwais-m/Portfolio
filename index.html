@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Mohamed Uwais — Client Relations & Investment Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0E0B18;
+    --bg-raised: #17132480;
+    --ink: #F2F0F8;
+    --ink-soft: #A79FC0;
+    --line: #2A2440;
+    --accent: #7C5CFC;
+    --accent-soft: #7C5CFC33;
+    --pop: #C6FF6B;
+    --pop-ink: #12180A;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    background-image:
+      radial-gradient(60% 40% at 85% 0%, #7C5CFC26 0%, transparent 60%),
+      radial-gradient(50% 35% at 10% 15%, #C6FF6B14 0%, transparent 60%);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  h1, h2, h3, .brand { font-family: 'Sora', sans-serif; }
+  a { color: inherit; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* Nav */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding-top: env(safe-area-inset-top, 0px);
+    background: #0E0B18CC;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .brand {
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+  .brand span { color: var(--accent); }
+  .navlinks { display: flex; gap: 30px; list-style: none; margin: 0; padding: 0; }
+  .navlinks a {
+    text-decoration: none;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    transition: color 0.15s ease;
+  }
+  .navlinks a:hover { color: var(--ink); }
+  .navlinks { }
+  @media (max-width: 640px) { .navlinks { display: none; } }
+
+  /* Hero */
+  header.hero {
+    padding: 110px 0 90px;
+    text-align: left;
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--pop);
+    background: #C6FF6B14;
+    border: 1px solid #C6FF6B33;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+  }
+  h1.headline {
+    font-size: clamp(2.4rem, 6vw, 4.2rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 22px;
+    max-width: 14ch;
+  }
+  h1.headline .grad {
+    background: linear-gradient(90deg, var(--accent), var(--pop));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  p.subhead {
+    font-size: 1.1rem;
+    color: var(--ink-soft);
+    max-width: 52ch;
+    line-height: 1.6;
+    margin: 0 0 36px;
+  }
+  .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 26px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--pop); color: var(--pop-ink); }
+  .btn-ghost { background: transparent; border: 1px solid var(--line); color: var(--ink); }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 70px;
+    padding-top: 36px;
+    border-top: 1px solid var(--line);
+  }
+  .stat .num {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+  }
+  .stat .lbl { color: var(--ink-soft); font-size: 0.85rem; margin-top: 4px; }
+  @media (max-width: 640px) { .stat-row { grid-template-columns: 1fr; gap: 20px; } }
+
+  /* Section shell */
+  section { padding: 90px 0; border-top: 1px solid var(--line); }
+  .section-tag {
+    font-size: 0.8rem;
+    color: var(--accent);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 14px;
+  }
+  h2.section-title {
+    font-size: clamp(1.7rem, 4vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 40px;
+    max-width: 22ch;
+  }
+
+  /* About */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 60px;
+    align-items: start;
+  }
+  .about-grid p {
+    color: var(--ink-soft);
+    line-height: 1.75;
+    font-size: 1rem;
+    margin: 0 0 18px;
+  }
+  .creds {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .cred {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.9rem;
+  }
+  .cred:last-child { border-bottom: none; }
+  .cred .name { font-weight: 600; }
+  .cred .meta { color: var(--ink-soft); text-align: right; }
+  @media (max-width: 780px) { .about-grid { grid-template-columns: 1fr; } }
+
+  /* Experience */
+  .timeline { display: flex; flex-direction: column; }
+  .tl-item {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 28px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .tl-item:last-child { border-bottom: none; }
+  .tl-date { color: var(--ink-soft); font-size: 0.88rem; padding-top: 2px; }
+  .tl-role { font-weight: 700; font-size: 1.05rem; margin-bottom: 6px; }
+  .tl-org { color: var(--accent); font-size: 0.92rem; margin-bottom: 10px; }
+  .tl-desc { color: var(--ink-soft); font-size: 0.94rem; line-height: 1.6; max-width: 60ch; }
+  @media (max-width: 640px) { .tl-item { grid-template-columns: 1fr; gap: 6px; } }
+
+  /* Portfolio / tools */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+  }
+  @media (max-width: 780px) { .card-grid { grid-template-columns: 1fr; } }
+  .proj-card {
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 30px;
+    background: var(--bg-raised);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .proj-card .tag {
+    font-size: 0.75rem;
+    color: var(--pop);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+  }
+  .proj-card h3 { font-size: 1.25rem; margin: 0; }
+  .proj-card p { color: var(--ink-soft); font-size: 0.92rem; line-height: 1.6; margin: 0; flex-grow: 1; }
+  .proj-card .link {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--pop);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Contact */
+  .contact-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 46px;
+    background: var(--bg-raised);
+  }
+  .contact-box h2 { margin: 0 0 10px; font-size: 1.8rem; }
+  .contact-box p { color: var(--ink-soft); margin: 0; max-width: 42ch; }
+  .contact-links { display: flex; gap: 14px; flex-wrap: wrap; }
+
+  footer {
+    padding: 36px 0 60px;
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <a class="brand" href="#top">UWAIS<span>.</span></a>
+    <ul class="navlinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#work">Portfolio</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div id="top" class="wrap">
+  <header class="hero">
+    <span class="eyebrow">● Open to client relations & investment research roles</span>
+    <h1 class="headline">Bridging <span class="grad">client relationships</span> and investment research.</h1>
+    <p class="subhead">I'm Mohamed Uwais — a Toronto-based client relations professional working toward the CFA designation, with hands-on experience across customer service, research, and real estate finance.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="#work">See my work</a>
+      <a class="btn btn-ghost" href="#contact">Get in touch</a>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat">
+        <div class="num">CIRE</div>
+        <div class="lbl">Canadian Investment Regulatory Exam, 2026</div>
+      </div>
+      <div class="stat">
+        <div class="num">ECBA</div>
+        <div class="lbl">Entry Certificate in Business Analysis, 2026</div>
+      </div>
+      <div class="stat">
+        <div class="num">CFA</div>
+        <div class="lbl">Candidate — in progress</div>
+      </div>
+    </div>
+  </header>
+</div>
+
+<section id="about">
+  <div class="wrap">
+    <div class="section-tag">About</div>
+    <h2 class="section-title">Grounded in client service, moving into investment research.</h2>
+    <div class="about-grid">
+      <div>
+        <p>I currently work as a Client Relationship Associate & Research Analyst at Dreamhouse Real Estate, where I combine direct client-facing work with research support. Before that, I spent over a year as a Customer Service Representative with the City of Toronto, building a foundation in resolving problems clearly and reliably for the public.</p>
+        <p>Alongside my BBA from Annamalai University, I hold a Diploma in Computer Programming – Software Development from Seneca Polytechnic — which is part of why this site exists as code I built myself rather than a template. I'm now working toward the CFA designation as I move deeper into investment research and financial services.</p>
+      </div>
+      <div class="creds">
+        <div class="cred"><span class="name">BBA</span><span class="meta">Annamalai University, 2022–2025</span></div>
+        <div class="cred"><span class="name">Diploma, Software Development</span><span class="meta">Seneca Polytechnic, 2023–2025</span></div>
+        <div class="cred"><span class="name">CIRE Certification</span><span class="meta">2026</span></div>
+        <div class="cred"><span class="name">ECBA</span><span class="meta">2026</span></div>
+        <div class="cred"><span class="name">CFA Program</span><span class="meta">In progress</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <div class="section-tag">Experience</div>
+    <h2 class="section-title">Where I've worked.</h2>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-date">Sept 2025 — Present</div>
+        <div>
+          <div class="tl-role">Client Relationship Associate & Research Analyst</div>
+          <div class="tl-org">Dreamhouse Real Estate</div>
+          <div class="tl-desc">Managing client relationships while supporting research work at the intersection of real estate and finance.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">June 2024 — Aug 2025</div>
+        <div>
+          <div class="tl-role">Customer Service Representative</div>
+          <div class="tl-org">City of Toronto</div>
+          <div class="tl-desc">Handled resident inquiries and service requests, building strong fundamentals in client communication and problem resolution at scale.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="wrap">
+    <div class="section-tag">Portfolio</div>
+    <h2 class="section-title">Tools & projects.</h2>
+    <div class="card-grid">
+      <div class="proj-card">
+        <span class="tag">Interactive tool</span>
+        <h3>FIRE Number Calculator</h3>
+        <p>A calculator that estimates the portfolio size needed for financial independence, projects a savings timeline, and illustrates generic model asset allocations by risk profile — built end-to-end in HTML, CSS, and JavaScript.</p>
+        <a class="link" href="fire-calculator.html">Launch the calculator →</a>
+      </div>
+      <div class="proj-card">
+        <span class="tag">Coming soon</span>
+        <h3>More in progress</h3>
+        <p>This section will grow as more research and analysis projects are added — check back for updates.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="contact-box">
+      <div>
+        <h2>Let's connect.</h2>
+        <p>Open to conversations about client relations and investment research roles in Toronto and beyond.</p>
+      </div>
+      <div class="contact-links">
+        <a class="btn btn-primary" href="mailto:hello@uwaism.com">Email me</a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/in/your-linkedin-handle" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">© 2026 Mohamed Uwais · uwaism.com</div>
+</footer>
+
+</body>
+</html>
