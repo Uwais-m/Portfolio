@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Mohamed Uwais — Client Relations & Investment Research</title>
-<link rel="icon" type="image/svg+xml" href="favicon.svg"> 
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0E0B18;
@@ -35,6 +35,7 @@
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
   h1, h2, h3, .brand { font-family: 'Sora', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
   a { color: inherit; }
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
 
@@ -76,9 +77,63 @@
 
   /* Hero */
   header.hero {
+    position: relative;
     padding: 110px 0 90px;
     text-align: left;
+    overflow: hidden;
+    isolation: isolate;
   }
+
+  #heroCanvas {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .hero-wire-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .hero-wire-row {
+    position: absolute;
+    left: 0;
+    white-space: nowrap;
+    font-size: 0.72rem;
+    letter-spacing: 0.01em;
+    color: rgba(167,159,192,0.22);
+    display: flex;
+    gap: 46px;
+    animation: heroWireScroll linear infinite;
+  }
+  .hero-wire-row span.hl { color: rgba(198,255,107,0.28); }
+  .hero-wire-row span.dn { color: rgba(255,107,122,0.24); }
+  .hero-wire-row span.tag { color: rgba(124,92,252,0.28); margin-right: 8px; }
+
+  @keyframes heroWireScroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* mask the animated layers out toward the text side so they never fight the headline */
+  header.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background:
+      linear-gradient(180deg, var(--bg) 0%, transparent 16%, transparent 82%, var(--bg) 100%),
+      linear-gradient(90deg, var(--bg) 0%, var(--bg) 40%, transparent 68%, transparent 100%);
+    pointer-events: none;
+  }
+
+  header.hero > .wrap { position: relative; z-index: 3; }
+
   .eyebrow {
     display: inline-flex;
     align-items: center;
@@ -285,28 +340,32 @@
   </div>
 </nav>
 
-<div id="top" class="wrap">
+<div id="top">
   <header class="hero">
-    <span class="eyebrow">● Open to client relations & investment research roles</span>
-    <h1 class="headline">Bridging <span class="grad">client relationships</span> and investment research.</h1>
-    <p class="subhead">I'm Mohamed Uwais — a Toronto-based client relations professional working toward the CFA designation, with hands-on experience across customer service, research, and real estate finance.</p>
-    <div class="hero-ctas">
-      <a class="btn btn-primary" href="#work">See my work</a>
-      <a class="btn btn-ghost" href="#contact">Get in touch</a>
-    </div>
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-wire-layer" id="heroWireLayer"></div>
+    <div class="wrap">
+      <span class="eyebrow">● Open to client relations & investment research roles</span>
+      <h1 class="headline">Bridging <span class="grad">client relationships</span> and investment research.</h1>
+      <p class="subhead">I'm Mohamed Uwais — a Toronto-based client relations professional working toward the CFA designation, with hands-on experience across customer service, research, and real estate finance.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#work">See my work</a>
+        <a class="btn btn-ghost" href="#contact">Get in touch</a>
+      </div>
 
-    <div class="stat-row">
-      <div class="stat">
-        <div class="num">CIRE</div>
-        <div class="lbl">Canadian Investment Regulatory Exam, 2026</div>
-      </div>
-      <div class="stat">
-        <div class="num">ECBA</div>
-        <div class="lbl">Entry Certificate in Business Analysis, 2026</div>
-      </div>
-      <div class="stat">
-        <div class="num">CFA</div>
-        <div class="lbl">Candidate — in progress</div>
+      <div class="stat-row">
+        <div class="stat">
+          <div class="num">CIRE</div>
+          <div class="lbl">Canadian Investment Regulatory Exam, 2026</div>
+        </div>
+        <div class="stat">
+          <div class="num">ECBA</div>
+          <div class="lbl">Entry Certificate in Business Analysis, 2026</div>
+        </div>
+        <div class="stat">
+          <div class="num">CFA</div>
+          <div class="lbl">Candidate — in progress</div>
+        </div>
       </div>
     </div>
   </header>
@@ -395,6 +454,173 @@
 <footer>
   <div class="wrap">© 2026 Mohamed Uwais · uwaism.com</div>
 </footer>
+
+<script>
+  /* ===== Hero background: quiet market texture (grid + sparklines + newswire + rates) ===== */
+  (function () {
+    const canvas = document.getElementById('heroCanvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, DPR;
+
+    function resize() {
+      DPR = Math.min(window.devicePixelRatio || 1, 2);
+      W = canvas.offsetWidth;
+      H = canvas.offsetHeight;
+      canvas.width = W * DPR;
+      canvas.height = H * DPR;
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function drawGrid() {
+      ctx.strokeStyle = 'rgba(167,159,192,0.035)';
+      ctx.lineWidth = 1;
+      const rows = 6;
+      for (let i = 1; i < rows; i++) {
+        const y = (H / rows) * i;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(W, y);
+        ctx.stroke();
+      }
+    }
+
+    function makeSpark() {
+      const pts = [0];
+      for (let i = 1; i < 10; i++) pts.push(pts[i - 1] + (Math.random() - 0.42) * 5);
+      return pts;
+    }
+    const sparks = Array.from({ length: 3 }, () => ({
+      x: Math.random(),
+      y: 0.18 + Math.random() * 0.5,
+      w: 56 + Math.random() * 20,
+      h: 18,
+      data: makeSpark(),
+      drift: 0.00006 + Math.random() * 0.00008,
+      label: ['NVDA', 'RY.TO', 'VFV.TO', 'AAPL', 'SHOP.TO'][Math.floor(Math.random() * 5)],
+    }));
+
+    function drawSparks() {
+      sparks.forEach(s => {
+        s.x -= s.drift;
+        if (s.x < -0.1) s.x = 1.1;
+        const px = s.x * W;
+        const py = s.y * H;
+        const min = Math.min(...s.data), max = Math.max(...s.data);
+        const range = (max - min) || 1;
+        const up = s.data[s.data.length - 1] >= s.data[0];
+
+        ctx.beginPath();
+        s.data.forEach((v, i) => {
+          const x = px + (i / (s.data.length - 1)) * s.w;
+          const y = py + s.h - ((v - min) / range) * s.h;
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        });
+        ctx.strokeStyle = up ? 'rgba(198,255,107,0.22)' : 'rgba(255,107,122,0.2)';
+        ctx.lineWidth = 1.1;
+        ctx.stroke();
+
+        ctx.font = '9px "JetBrains Mono", monospace';
+        ctx.fillStyle = 'rgba(167,159,192,0.2)';
+        ctx.fillText(s.label, px, py - 5);
+      });
+    }
+
+    // order-book style depth bars, pulsing gently on the right
+    const depthBars = Array.from({ length: 14 }, (_, i) => ({
+      y: 0.10 + i * 0.06,
+      len: 0.12 + Math.random() * 0.4,
+      side: Math.random() > 0.5 ? 1 : -1,
+      speed: 0.0008 + Math.random() * 0.001,
+      phase: Math.random() * Math.PI * 2,
+    }));
+
+    function drawDepth(t) {
+      const originX = W * 0.985;
+      depthBars.forEach(b => {
+        const wobble = 0.85 + 0.15 * Math.sin(t * b.speed * 1000 + b.phase);
+        const barLen = b.len * W * 0.16 * wobble;
+        const y = b.y * H;
+        const color = b.side === 1 ? 'rgba(198,255,107,0.09)' : 'rgba(255,107,122,0.075)';
+        ctx.fillStyle = color;
+        ctx.fillRect(originX - barLen, y, barLen, 4);
+      });
+    }
+
+    let t = 0;
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      drawGrid();
+      drawDepth(t);
+      drawSparks();
+      t++;
+      requestAnimationFrame(draw);
+    }
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) requestAnimationFrame(draw); else draw();
+
+    // scrolling newswire + rates ticker
+    const headlines = [
+      ["07:41", "TSX opens higher as financials lead gainers", "up"],
+      ["08:02", "Fed holds rates steady, markets price in Q1 cut", "flat"],
+      ["08:15", "NVDA +2.4% premarket on datacenter demand", "up"],
+      ["08:30", "CAD steady against USD ahead of jobs data", "flat"],
+      ["09:05", "Bond yields dip as investors rotate to equities", "down"],
+      ["09:20", "S&P 500 futures point to a flat open", "flat"],
+      ["09:44", "RY.TO gains after earnings beat estimates", "up"],
+      ["10:10", "Oil prices slip on rising inventory data", "down"],
+    ];
+
+    const rates = [
+      ["USD/CAD", "1.352", "flat"],
+      ["10Y Yield", "4.21%", "up"],
+      ["TSX", "24,180", "up"],
+      ["S&P 500", "5,830", "down"],
+      ["BoC Rate", "3.75%", "flat"],
+      ["Gold", "2,614", "up"],
+    ];
+
+    function buildWireRow(top, duration, reverse) {
+      const row = document.createElement('div');
+      row.className = 'hero-wire-row mono';
+      row.style.top = top + '%';
+      row.style.animationDuration = duration + 's';
+      if (reverse) row.style.animationDirection = 'reverse';
+
+      const items = headlines.map(([time, text, dir]) => {
+        const cls = dir === 'up' ? 'hl' : dir === 'down' ? 'dn' : '';
+        const arrow = dir === 'up' ? '▲' : dir === 'down' ? '▼' : '•';
+        return `<span><span class="tag">${time}</span><span class="${cls}">${arrow}</span> ${text}</span>`;
+      }).join('');
+
+      row.innerHTML = items + items;
+      return row;
+    }
+
+    function buildRatesRow(top, duration) {
+      const row = document.createElement('div');
+      row.className = 'hero-wire-row mono';
+      row.style.top = top + '%';
+      row.style.animationDuration = duration + 's';
+
+      const items = rates.map(([label, value, dir]) => {
+        const cls = dir === 'up' ? 'hl' : dir === 'down' ? 'dn' : '';
+        const arrow = dir === 'up' ? '▲' : dir === 'down' ? '▼' : '•';
+        return `<span><span class="tag">${label}</span>${value} <span class="${cls}">${arrow}</span></span>`;
+      }).join('');
+
+      row.innerHTML = items + items;
+      return row;
+    }
+
+    const wireLayer = document.getElementById('heroWireLayer');
+    wireLayer.appendChild(buildWireRow(14, 68, false));
+    wireLayer.appendChild(buildRatesRow(40, 54));
+    wireLayer.appendChild(buildWireRow(64, 76, true));
+  })();
+</script>
 
 </body>
 </html>
