@@ -1,0 +1,22 @@
+{
+	// Cloudflare Worker config for the uwaism.com visit tracker.
+	// Deploy with:  npx wrangler deploy
+	"name": "uwaism-tracker",
+	"main": "worker.js",
+	"compatibility_date": "2026-09-01",
+	"observability": {
+		"enabled": true
+	},
+	// The D1 database that stores visits.
+	// D1 binding used by worker.js.
+	"d1_databases": [
+		{
+			"binding": "uwaism_analytics",
+			"database_name": "uwaism-analytics",
+			"database_id": "86f9e5f0-31c9-422f-a7cc-e77288585042"
+		}
+	]
+	// ADMIN_TOKEN is NOT set here — it is a secret, set once with:
+	//   npx wrangler secret put ADMIN_TOKEN
+	// Secrets never belong in this file, since this file goes into git.
+}

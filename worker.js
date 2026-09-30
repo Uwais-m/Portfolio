@@ -1,6 +1,6 @@
 /**
  * uwaism.com — visit tracker + admin API
- * Deploy this as a Cloudflare Worker, bind a D1 database as `DB`,
+ * Deploy this as a Cloudflare Worker, bind D1 as `uwaism_analytics`,
  * and set a secret `ADMIN_TOKEN` (Workers & Pages → your worker → Settings → Variables).
  *
  * Routes:
@@ -49,7 +49,7 @@ async function handleTrack(request, env, origin) {
     const referrer = typeof body.referrer === "string" ? body.referrer.slice(0, 300) : "";
     const userAgent = (request.headers.get("User-Agent") || "").slice(0, 300);
 
-    await env.DB.prepare(
+    await env.uwaism_analytics.prepare(
       `INSERT INTO visits (ip, path, referrer, user_agent, country, created_at)
        VALUES (?, ?, ?, ?, ?, datetime('now'))`
     ).bind(ip, path, referrer, userAgent, country).run();
@@ -78,15 +78,15 @@ async function handleStats(request, env, origin) {
   }
 
   const [totalRow, uniqueRow, dailyRows, topIpRows, recentRows] = await Promise.all([
-    env.DB.prepare(`SELECT COUNT(*) AS n FROM visits`).first(),
-    env.DB.prepare(`SELECT COUNT(DISTINCT ip) AS n FROM visits`).first(),
-    env.DB.prepare(
+    env.uwaism_analytics.prepare(`SELECT COUNT(*) AS n FROM visits`).first(),
+    env.uwaism_analytics.prepare(`SELECT COUNT(DISTINCT ip) AS n FROM visits`).first(),
+    env.uwaism_analytics.prepare(
       `SELECT date(created_at) AS day, COUNT(*) AS n
        FROM visits
        WHERE created_at >= datetime('now', '-30 days')
        GROUP BY day ORDER BY day ASC`
     ).all(),
-    env.DB.prepare(
+    env.uwaism_analytics.prepare(
       `SELECT ip, COUNT(*) AS visits, MIN(created_at) AS first_seen, MAX(created_at) AS last_seen,
               MAX(country) AS country
        FROM visits
@@ -94,7 +94,7 @@ async function handleStats(request, env, origin) {
        ORDER BY visits DESC
        LIMIT 50`
     ).all(),
-    env.DB.prepare(
+    env.uwaism_analytics.prepare(
       `SELECT ip, path, referrer, country, created_at
        FROM visits
        ORDER BY created_at DESC

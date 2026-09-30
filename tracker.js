@@ -1,6 +1,6 @@
 /* uwaism.com — lightweight visit tracker. Fires once per page load. */
 (function () {
-  var WORKER_URL = "https://YOUR-WORKER-SUBDOMAIN.workers.dev/track";
+  var WORKER_URL = "https://uwaism-tracker.uwaismm05.workers.dev/track";
   try {
     var payload = JSON.stringify({
       path: location.pathname,
