@@ -47,12 +47,15 @@ async function handleTrack(request, env, origin) {
     const country = request.cf && request.cf.country ? request.cf.country : null;
     const path = typeof body.path === "string" ? body.path.slice(0, 200) : "/";
     const referrer = typeof body.referrer === "string" ? body.referrer.slice(0, 300) : "";
+    const source = ["linkedin", "message", "resume", "direct"].includes(body.source)
+      ? body.source
+      : "direct";
     const userAgent = (request.headers.get("User-Agent") || "").slice(0, 300);
 
     await env.uwaism_analytics.prepare(
-      `INSERT INTO visits (ip, path, referrer, user_agent, country, created_at)
-       VALUES (?, ?, ?, ?, ?, datetime('now'))`
-    ).bind(ip, path, referrer, userAgent, country).run();
+      `INSERT INTO visits (ip, path, referrer, source, user_agent, country, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, datetime('now'))`
+    ).bind(ip, path, referrer, source, userAgent, country).run();
 
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,

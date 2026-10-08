@@ -404,12 +404,13 @@
       <tr>
         <td class="mono" style="font-size:0.78rem;color:var(--ink-soft)">${formatDate(r.created_at)}</td>
         <td class="mono">${escapeHtml(r.ip)}</td>
+        <td>${escapeHtml(r.source || 'direct')}</td>
         <td>${escapeHtml(r.path || '/')}</td>
         <td class="country">${r.country || '—'}</td>
       </tr>`).join('');
     el.innerHTML = `
       <table>
-        <thead><tr><th>Time</th><th>IP address</th><th>Page</th><th>Country</th></tr></thead>
+        <thead><tr><th>Time</th><th>IP address</th><th>Source</th><th>Page</th><th>Country</th></tr></thead>
         <tbody>${body}</tbody>
       </table>`;
   }
