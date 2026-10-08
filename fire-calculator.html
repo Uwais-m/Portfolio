@@ -301,6 +301,66 @@
     transition: width 0.6s ease;
   }
 
+  .nominal-note {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    margin: 14px 0 0;
+  }
+  .block-title {
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    margin: 32px 0 12px;
+  }
+
+  .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .chart text {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    fill: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .scenarios {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--line-strong);
+  }
+  .scenario {
+    padding: 14px 14px 16px;
+    border-right: 1px solid var(--line-strong);
+  }
+  .scenario:last-child { border-right: none; }
+  .scenario.base { background: var(--bg-raised); }
+  .scenario .s-name { font-size: 0.8rem; font-weight: 600; }
+  .scenario .s-rate { font-size: 0.74rem; color: var(--ink-soft); margin-top: 2px; }
+  .scenario .s-years {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1.6rem;
+    font-variant-numeric: tabular-nums;
+    margin-top: 12px;
+  }
+  .scenario .s-sub { font-size: 0.74rem; color: var(--ink-soft); }
+
+  .levers { margin-top: 6px; }
+  .lever {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.85rem;
+  }
+  .lever .delta { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink-soft); }
+  .lever .delta.faster { color: var(--growth); }
+
+  p.assumptions {
+    font-size: 0.76rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 30px 0 0;
+  }
+
   footer.disclaimer {
     margin-top: 44px;
     padding-top: 18px;
@@ -313,7 +373,11 @@
   @media (max-width: 480px) {
     .result-number { font-size: 2.3rem; }
     .row { flex-wrap: wrap; }
+    .row .field { margin-left: auto; }
     input[type="number"] { width: 110px; }
+    .scenario { padding: 12px 10px 14px; }
+    .scenario .s-years { font-size: 1.3rem; }
+    .chart text { font-size: 19px; }
   }
 </style>
 </head>
@@ -325,7 +389,7 @@
     <span class="tag"><a href="index.html" style="color:inherit;text-decoration:none;border-bottom:1px solid var(--line-strong);">← uwaism.com</a></span>
   </header>
 
-  <p class="lede">Estimate the portfolio size needed to cover your annual spending indefinitely, then see how a monthly savings habit gets you there.</p>
+  <p class="lede">Estimate the portfolio size needed to cover your annual spending indefinitely, then see how a monthly savings habit gets you there — after inflation, and across a range of outcomes.</p>
 
   <div class="row">
     <div>
@@ -352,10 +416,21 @@
   <div class="row">
     <div>
       <label for="return">Expected annual return</label>
-      <span class="hint">Long-run average, before withdrawals</span>
+      <span class="hint">Nominal long-run average, before inflation</span>
     </div>
     <div class="field">
-      <input type="number" id="return" value="7" min="0" max="20" step="0.1">
+      <input type="number" id="return" value="7" min="-10" max="20" step="0.1">
+      <span class="suffix">%</span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div>
+      <label for="inflation">Inflation</label>
+      <span class="hint">Expected average rise in prices per year</span>
+    </div>
+    <div class="field">
+      <input type="number" id="inflation" value="2.5" min="0" max="15" step="0.1">
       <span class="suffix">%</span>
     </div>
   </div>
@@ -376,7 +451,7 @@
   </div>
 
   <section class="result" id="resultSection">
-    <div class="result-label">Your FIRE number</div>
+    <div class="result-label">Your FIRE number · in today's dollars</div>
     <div class="result-number" id="fireNumber">$0</div>
     <div class="result-sub" id="fireSub"></div>
 
@@ -400,13 +475,21 @@
       <div class="timeline">
         <div>
           <div class="years" id="yearsToFire">—</div>
-          <div class="years-label">years to reach FIRE</div>
+          <div class="years-label" id="yearsLabel">years to reach FIRE</div>
         </div>
         <div style="text-align:right">
-          <div class="years" id="totalContributed">—</div>
-          <div class="years-label">from contributions vs. growth</div>
+          <div class="years" id="growthShare">—</div>
+          <div class="years-label">of the final balance from growth</div>
         </div>
       </div>
+      <div class="nominal-note" id="nominalNote"></div>
+
+      <div class="block-title">Projected portfolio, in today's dollars</div>
+      <div class="chart" id="chart"></div>
+
+      <div class="block-title">Sensitivity — the same plan under different assumptions</div>
+      <div class="scenarios" id="scenarios"></div>
+      <div class="levers" id="levers"></div>
 
       <div class="profile-toggle" id="profileToggle">
         <button data-profile="conservative">Conservative</button>
@@ -417,6 +500,8 @@
 
       <div class="alloc-title">Illustrative model allocation</div>
       <div class="alloc" id="allocList"></div>
+
+      <p class="assumptions">How this is calculated: the projection grows your savings at the real return, (1 + return) ÷ (1 + inflation) − 1, compounded monthly, so every figure is in today's dollars and is directly comparable to your FIRE number. It assumes your monthly savings rise with inflation, returns are constant every year, and there are no taxes or fees. Real markets are uneven, which is why the sensitivity range matters more than any single estimate.</p>
     </section>
   </section>
 
@@ -457,65 +542,208 @@
     }
   };
 
+  const MAX_MONTHS = 720; // 60 year cap
   let currentFire = 0;
   let currentProfile = "moderate";
+  let profilePicked = false;
+
+  const $ = (id) => document.getElementById(id);
 
   function fmt(n) {
     return "$" + Math.round(n).toLocaleString("en-US");
   }
+  function fmtShort(n) {
+    if (n >= 1e6) return "$" + (n / 1e6).toFixed(n >= 1e7 ? 1 : 2) + "M";
+    if (n >= 1e3) return "$" + Math.round(n / 1e3) + "k";
+    return "$" + Math.round(n);
+  }
+  function pct(r) {
+    return (r * 100).toFixed(1) + "%";
+  }
 
-  document.getElementById("calcBtn").addEventListener("click", () => {
-    const savings = parseFloat(document.getElementById("savings").value) || 0;
-    const expenses = parseFloat(document.getElementById("expenses").value) || 0;
-    const withdrawal = parseFloat(document.getElementById("withdrawal").value) || 4;
+  // An empty field falls back to the default; a real 0 stays 0.
+  function num(id, fallback, min, max) {
+    const v = parseFloat($(id).value);
+    if (!Number.isFinite(v)) return fallback;
+    return Math.min(max, Math.max(min, v));
+  }
 
-    currentFire = expenses / (withdrawal / 100);
+  function readInputs() {
+    return {
+      savings: num("savings", 0, 0, 1e10),
+      expenses: num("expenses", 0, 0, 1e9),
+      nominal: num("return", 7, -10, 20) / 100,
+      inflation: num("inflation", 2.5, 0, 15) / 100,
+      withdrawal: num("withdrawal", 4, 1, 10) / 100,
+      monthly: num("monthly", 0, 0, 1e8),
+    };
+  }
 
-    document.getElementById("fireNumber").textContent = fmt(currentFire);
-    const gap = currentFire - savings;
-    document.getElementById("fireSub").textContent = gap > 0
-      ? `Based on a ${withdrawal}% withdrawal rate on ${fmt(expenses)} in annual spending. You're ${fmt(gap)} away from that number today.`
-      : `Based on a ${withdrawal}% withdrawal rate on ${fmt(expenses)} in annual spending. Your current savings already cover it.`;
+  function realRate(nominal, inflation) {
+    return (1 + nominal) / (1 + inflation) - 1;
+  }
 
-    document.getElementById("resultSection").classList.add("visible");
-    document.getElementById("planSection").classList.remove("visible");
-  });
-
-  document.getElementById("planBtn").addEventListener("click", () => {
-    const savings = parseFloat(document.getElementById("savings").value) || 0;
-    const annualReturn = (parseFloat(document.getElementById("return").value) || 7) / 100;
-    const monthly = parseFloat(document.getElementById("monthly").value) || 0;
-
-    const monthlyRate = Math.pow(1 + annualReturn, 1/12) - 1;
-    let balance = savings;
+  // Everything here is in today's dollars: the balance grows at the real
+  // rate and the monthly contribution is held constant in real terms.
+  function project(start, monthly, annualReal, target) {
+    const r = Math.pow(1 + annualReal, 1 / 12) - 1;
+    let balance = start;
     let months = 0;
-    let contributed = savings;
-    const maxMonths = 720; // 60 year cap
-
-    if (balance < currentFire) {
-      while (balance < currentFire && months < maxMonths) {
-        balance = balance * (1 + monthlyRate) + monthly;
-        contributed += monthly;
-        months++;
-      }
+    const path = [{ t: 0, v: start }];
+    while (balance < target && months < MAX_MONTHS) {
+      balance = balance * (1 + r) + monthly;
+      months++;
+      if (months % 12 === 0) path.push({ t: months / 12, v: balance });
     }
+    if (months % 12 !== 0) path.push({ t: months / 12, v: balance });
+    return { months, years: months / 12, balance, path, reached: balance >= target };
+  }
 
-    const years = months / 12;
-    const growth = balance - contributed;
+  function yearsText(p) {
+    return p.reached ? p.years.toFixed(1) : "60+";
+  }
 
-    document.getElementById("yearsToFire").textContent = months >= maxMonths
-      ? "60+"
-      : years.toFixed(1);
-    document.getElementById("totalContributed").textContent =
-      contributed > 0 ? Math.round((growth / (contributed + growth)) * 100) + "% growth" : "—";
+  function deltaText(base, alt) {
+    if (!base.reached || !alt.reached) {
+      if (base.reached === alt.reached) return { text: "beyond 60 years either way", faster: false };
+      return alt.reached
+        ? { text: "reaches FIRE in " + alt.years.toFixed(1) + " yrs", faster: true }
+        : { text: "pushes past 60 years", faster: false };
+    }
+    const d = alt.years - base.years;
+    if (Math.abs(d) < 0.05) return { text: "no change", faster: false };
+    return {
+      text: Math.abs(d).toFixed(1) + " yrs " + (d < 0 ? "sooner" : "later"),
+      faster: d < 0,
+    };
+  }
 
-    // suggest a profile based on horizon, but let the user override
-    if (months < maxMonths) {
-      currentProfile = years <= 7 ? "conservative" : years <= 18 ? "moderate" : "aggressive";
+  function calcFire() {
+    const { savings, expenses, withdrawal } = readInputs();
+    currentFire = expenses / withdrawal;
+
+    $("fireNumber").textContent = fmt(currentFire);
+    const gap = currentFire - savings;
+    const basis = `Based on a ${pct(withdrawal)} withdrawal rate on ${fmt(expenses)} in annual spending.`;
+    $("fireSub").textContent = gap > 0
+      ? `${basis} You're ${fmt(gap)} away from that number today.`
+      : `${basis} Your current savings already cover it.`;
+  }
+
+  function renderChart(p, target) {
+    const W = 620, H = 210, L = 4, R = 74, T = 14, B = 26;
+    const tMax = Math.max(p.path[p.path.length - 1].t, 1);
+    const vMax = Math.max(target, ...p.path.map((d) => d.v)) * 1.08;
+    const x = (t) => L + (t / tMax) * (W - L - R);
+    const y = (v) => T + (1 - v / vMax) * (H - T - B);
+
+    const line = p.path.map((d) => `${x(d.t).toFixed(1)},${y(d.v).toFixed(1)}`).join(" ");
+    const area = `${x(0)},${y(0)} ${line} ${x(p.path[p.path.length - 1].t).toFixed(1)},${y(0)}`;
+    const ticks = [0, Math.round(tMax / 2), Math.round(tMax * 10) / 10]
+      .filter((t, i, a) => a.indexOf(t) === i);
+    const end = p.path[p.path.length - 1];
+
+    $("chart").innerHTML = `
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Projected portfolio growing from ${fmt(p.path[0].v)} to ${fmt(end.v)} over ${yearsText(p)} years, against a target of ${fmt(target)}">
+        <line x1="${L}" x2="${W - R}" y1="${y(0)}" y2="${y(0)}" style="stroke:var(--line-strong)" />
+        <polygon points="${area}" style="fill:var(--growth);opacity:0.12" />
+        <polyline points="${line}" style="fill:none;stroke:var(--growth);stroke-width:2;stroke-linejoin:round" />
+        <line x1="${L}" x2="${W - R}" y1="${y(target)}" y2="${y(target)}" style="stroke:var(--accent);stroke-dasharray:4 4" />
+        <text x="${W - R + 8}" y="${y(target) + 4}" style="fill:var(--accent)">${fmtShort(target)}</text>
+        ${p.reached ? `<circle cx="${x(end.t)}" cy="${y(end.v)}" r="4" style="fill:var(--growth)" />` : ""}
+        ${ticks.map((t) => `<text x="${x(t)}" y="${H - 6}" text-anchor="${t === 0 ? "start" : t === ticks[ticks.length - 1] ? "end" : "middle"}">${t === 0 ? "Today" : "Yr " + t}</text>`).join("")}
+      </svg>`;
+  }
+
+  function renderPlan() {
+    const inp = readInputs();
+    const real = realRate(inp.nominal, inp.inflation);
+    const base = project(inp.savings, inp.monthly, real, currentFire);
+
+    $("yearsToFire").textContent = yearsText(base);
+    $("yearsLabel").textContent = base.reached
+      ? (base.months === 0 ? "years — you're already there" : `years to reach FIRE · around ${new Date().getFullYear() + Math.ceil(base.years)}`)
+      : "years — not reached within 60 years";
+
+    const contributed = inp.savings + inp.monthly * base.months;
+    const growth = base.balance - contributed;
+    $("growthShare").textContent = base.balance > 0 && base.months > 0
+      ? Math.max(0, Math.round((growth / base.balance) * 100)) + "%"
+      : "—";
+
+    const futureTarget = currentFire * Math.pow(1 + inp.inflation, base.years);
+    $("nominalNote").textContent = !base.reached
+      ? `At a ${pct(real)} real return (${pct(inp.nominal)} nominal, adjusted for ${pct(inp.inflation)} inflation), this plan doesn't reach the target within 60 years. Try a higher monthly amount or lower spending.`
+      : base.months === 0
+        ? `Your savings already meet the target in today's dollars.`
+        : `Projected at a ${pct(real)} real return (${pct(inp.nominal)} nominal, adjusted for ${pct(inp.inflation)} inflation). In future dollars, the target would be about ${fmtShort(futureTarget)} by then — the same buying power as ${fmtShort(currentFire)} today.`;
+
+    renderChart(base, currentFire);
+
+    const scenarios = [
+      { name: "Pessimistic", nominal: inp.nominal - 0.02, cls: "" },
+      { name: "Base case", nominal: inp.nominal, cls: "base" },
+      { name: "Optimistic", nominal: inp.nominal + 0.02, cls: "" },
+    ];
+    $("scenarios").innerHTML = scenarios.map((s) => {
+      const r = realRate(s.nominal, inp.inflation);
+      const p = s.cls === "base" ? base : project(inp.savings, inp.monthly, r, currentFire);
+      return `<div class="scenario ${s.cls}">
+        <div class="s-name">${s.name}</div>
+        <div class="s-rate">${pct(s.nominal)} return · ${pct(r)} real</div>
+        <div class="s-years">${yearsText(p)}</div>
+        <div class="s-sub">years to FIRE</div>
+      </div>`;
+    }).join("");
+
+    const levers = [
+      {
+        label: "Save $200 more per month",
+        p: project(inp.savings, inp.monthly + 200, real, currentFire),
+      },
+      {
+        label: "Inflation 1 point higher",
+        p: project(inp.savings, inp.monthly, realRate(inp.nominal, inp.inflation + 0.01), currentFire),
+      },
+    ];
+    if (inp.withdrawal - 0.005 >= 0.01) {
+      levers.push({
+        label: `Withdraw ${pct(inp.withdrawal - 0.005)} instead (a more cautious target)`,
+        p: project(inp.savings, inp.monthly, real, inp.expenses / (inp.withdrawal - 0.005)),
+      });
+    }
+    $("levers").innerHTML = levers.map((l) => {
+      const d = deltaText(base, l.p);
+      return `<div class="lever"><span>${l.label}</span><span class="delta ${d.faster ? "faster" : ""}">${d.text}</span></div>`;
+    }).join("");
+
+    // suggest a profile based on horizon, unless the user picked one
+    if (!profilePicked && base.reached) {
+      currentProfile = base.years <= 7 ? "conservative" : base.years <= 18 ? "moderate" : "aggressive";
     }
     renderProfile(currentProfile);
+  }
 
-    document.getElementById("planSection").classList.add("visible");
+  $("calcBtn").addEventListener("click", () => {
+    calcFire();
+    $("resultSection").classList.add("visible");
+    if ($("planSection").classList.contains("visible")) renderPlan();
+  });
+
+  $("planBtn").addEventListener("click", () => {
+    calcFire();
+    profilePicked = false;
+    renderPlan();
+    $("planSection").classList.add("visible");
+  });
+
+  // once results are showing, keep them in sync as inputs change
+  document.querySelectorAll("input[type=number]").forEach((el) => {
+    el.addEventListener("input", () => {
+      if (!$("resultSection").classList.contains("visible")) return;
+      calcFire();
+      if ($("planSection").classList.contains("visible")) renderPlan();
+    });
   });
 
   function renderProfile(key) {
@@ -545,6 +773,7 @@
   document.getElementById("profileToggle").addEventListener("click", (e) => {
     const btn = e.target.closest("button");
     if (!btn) return;
+    profilePicked = true;
     renderProfile(btn.dataset.profile);
   });
 </script>
