@@ -69,19 +69,21 @@ If they are ever wired to a real feed, quotes must be labeled as delayed.
 Rather than a third-party analytics product, this tracks visits directly so per-IP
 repeat-visit counts are visible.
 
-- `tracker.js` POSTs `{path, referrer}` to the Worker on each page load.
-- The Worker reads the real client IP from the `CF-Connecting-IP` header plus
-  `request.cf.country`, and inserts a row into a Cloudflare **D1** database.
-- `GET /stats` returns aggregates and requires `Authorization: Bearer <ADMIN_TOKEN>`.
-  The token is a Worker secret — the gate in `admin.html` is enforced server-side,
-  not just in the browser.
-- `admin.html` shows total visits, unique visitors, avg visits per visitor, repeat-visitor
-  count, a 30-day bar chart, an IP table, and recent activity.
-
-**Setup status:** the code is written but the Cloudflare side may not be deployed yet.
-Both `tracker.js` and `admin.html` contain the placeholder `YOUR-WORKER-SUBDOMAIN.workers.dev`,
-which must be replaced with the real Worker URL. `ALLOWED_ORIGIN` in `worker.js` is
-pinned to `https://uwaism.com`.
+- `tracker.js` sends a page view to `/track` on load and a `/click` for every link click.
+  It posts as `text/plain` on purpose (no CORS preflight; JSON content-type was silently
+  dropping beacons). It tags each browser with a random `uw_vid` in localStorage so
+  devices sharing one IP (same Wi-Fi) count separately, and carries `?source=`
+  (linkedin/message/resume, from the redirect pages) in sessionStorage for the whole visit.
+- The Worker reads the real client IP from `CF-Connecting-IP` plus `request.cf.country`
+  and inserts into Cloudflare **D1** tables `visits` and `clicks`. It creates `clicks` and
+  adds `visits.visitor_id` itself on first run, so no manual migration.
+- `GET /stats?source=all|linkedin|message|resume` requires `Authorization: Bearer <ADMIN_TOKEN>`.
+  The token is a Worker secret — the gate in `admin.html` is enforced server-side.
+- `admin.html` has tabs per source: visits, unique visitors, returning visitors (seen on
+  2+ days), link clicks, click rate, 30-day chart, top links, per-IP table, recent activity.
+  Its "Don't track this browser" button sets `uw_ignore` in localStorage, which tracker.js honors.
+- **Deploying `worker.js` is separate from GitHub Pages** (`npx wrangler deploy`, or paste
+  into the Cloudflare dashboard editor). Worker URL: `uwaism-tracker.uwaismm05.workers.dev`.
 
 Visitor IPs are stored intentionally and knowingly. `admin.html` carries
 `noindex, nofollow` and is not linked from anywhere on the site.

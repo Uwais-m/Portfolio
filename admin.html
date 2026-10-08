@@ -33,7 +33,8 @@
   }
   h1, h2, .brand { font-family: 'Sora', sans-serif; }
   .mono { font-family: 'JetBrains Mono', monospace; }
-  .wrap { max-width: 980px; margin: 0 auto; padding: 40px 24px 80px; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 40px 24px 80px; }
+  @media (max-width: 640px) { .wrap { padding: 28px 16px 60px; } }
 
   /* ---- gate ---- */
   #gate {
@@ -75,52 +76,95 @@
   header.top {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 30px;
+    align-items: flex-start;
+    margin-bottom: 26px;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 14px;
   }
   header.top h1 { font-size: 1.4rem; margin: 0; }
-  header.top .sub { color: var(--ink-soft); font-size: 0.85rem; }
-  .refresh-btn {
+  header.top .sub { color: var(--ink-soft); font-size: 0.85rem; margin-top: 4px; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ghost-btn {
     background: transparent;
     border: 1px solid var(--line);
     color: var(--ink-soft);
     border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 0.85rem;
+    padding: 8px 14px;
+    font-size: 0.82rem;
     cursor: pointer;
+    font-family: inherit;
   }
-  .refresh-btn:hover { color: var(--ink); border-color: var(--accent); }
+  .ghost-btn:hover { color: var(--ink); border-color: var(--accent); }
+  .ghost-btn.on { color: var(--pop); border-color: #C6FF6B55; }
+
+  /* tabs */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 26px;
+    overflow-x: auto;
+  }
+  .tab {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--ink-soft);
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 12px 14px 11px;
+    cursor: pointer;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+  .tab .count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    padding: 1px 8px;
+  }
+  .tab[aria-selected="true"] .count { color: var(--pop); border-color: #C6FF6B33; }
 
   .tiles {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 40px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
   }
   @media (max-width: 720px) { .tiles { grid-template-columns: repeat(2, 1fr); } }
   .tile {
     background: var(--bg-raised);
     border: 1px solid var(--line);
     border-radius: 14px;
-    padding: 20px;
+    padding: 18px 20px;
   }
   .tile .label { font-size: 0.78rem; color: var(--ink-soft); margin-bottom: 8px; }
   .tile .value { font-family: 'Sora', sans-serif; font-size: 1.8rem; font-weight: 700; }
+  .tile .note { font-size: 0.74rem; color: var(--ink-muted); margin-top: 4px; }
 
   section.block {
     background: var(--bg-raised);
     border: 1px solid var(--line);
     border-radius: 14px;
     padding: 24px;
-    margin-bottom: 24px;
+    margin-bottom: 22px;
   }
+  @media (max-width: 640px) { section.block { padding: 18px 14px; } }
   section.block h2 { font-size: 1rem; margin: 0 0 4px; }
-  section.block .desc { color: var(--ink-soft); font-size: 0.82rem; margin: 0 0 20px; }
+  section.block .desc { color: var(--ink-soft); font-size: 0.82rem; margin: 0 0 18px; }
 
   /* chart */
   #chartWrap { position: relative; }
+  #chartSvg { display: block; width: 100%; height: 190px; overflow: visible; }
   #chartTooltip {
     position: absolute;
     background: #0E0B18;
@@ -135,9 +179,11 @@
     z-index: 5;
   }
   #chartTooltip .d { color: var(--ink-soft); }
-  #chartTooltip .v { font-weight: 700; color: var(--pop); }
+  .legend { display: flex; gap: 16px; font-size: 0.76rem; color: var(--ink-soft); margin-top: 10px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
 
   /* table */
+  .table-scroll { overflow-x: auto; margin: 0 -4px; }
   table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
   th {
     text-align: left;
@@ -148,24 +194,32 @@
     letter-spacing: 0.04em;
     padding: 8px 10px;
     border-bottom: 1px solid var(--line);
+    white-space: nowrap;
   }
+  th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
   td {
     padding: 10px 10px;
     border-bottom: 1px solid var(--line);
+    vertical-align: top;
   }
   tr:last-child td { border-bottom: none; }
-  .repeat-badge {
+  .badge {
     display: inline-block;
-    background: #C6FF6B1A;
-    color: var(--pop);
-    border: 1px solid #C6FF6B33;
     border-radius: 100px;
     padding: 2px 9px;
     font-size: 0.72rem;
     font-weight: 600;
+    white-space: nowrap;
   }
+  .badge.repeat { background: #C6FF6B1A; color: var(--pop); border: 1px solid #C6FF6B33; }
+  .badge.view { background: #7C5CFC1F; color: #B3A1FF; border: 1px solid var(--accent-dim); }
+  .badge.click { background: #C6FF6B1A; color: var(--pop); border: 1px solid #C6FF6B33; }
+  .dim { color: var(--ink-soft); }
+  .tiny { font-size: 0.76rem; }
   .country { color: var(--ink-muted); font-size: 0.78rem; }
+  .href { color: var(--ink-muted); font-size: 0.74rem; word-break: break-all; }
   .empty { color: var(--ink-muted); font-size: 0.85rem; padding: 20px 0; text-align: center; }
+  .loading { opacity: 0.5; transition: opacity 0.15s ease; }
 </style>
 </head>
 <body>
@@ -185,72 +239,110 @@
         <h1>Site analytics</h1>
         <div class="sub">uwaism.com — last updated <span id="updatedAt" class="mono">—</span></div>
       </div>
-      <button class="refresh-btn" id="refreshBtn">Refresh</button>
+      <div class="actions">
+        <button class="ghost-btn" id="ignoreBtn" title="Stops this browser from being counted on uwaism.com">Don't track this browser</button>
+        <button class="ghost-btn" id="refreshBtn">Refresh</button>
+      </div>
     </header>
 
-    <div class="tiles">
-      <div class="tile">
-        <div class="label">Total visits</div>
-        <div class="value" id="tTotal">—</div>
+    <nav class="tabs" role="tablist" id="tabs">
+      <button class="tab" role="tab" data-source="all" aria-selected="true">All traffic <span class="count" data-count="all">—</span></button>
+      <button class="tab" role="tab" data-source="linkedin" aria-selected="false">LinkedIn <span class="count" data-count="linkedin">—</span></button>
+      <button class="tab" role="tab" data-source="message" aria-selected="false">Message <span class="count" data-count="message">—</span></button>
+      <button class="tab" role="tab" data-source="resume" aria-selected="false">Resume <span class="count" data-count="resume">—</span></button>
+    </nav>
+
+    <div id="panel">
+      <div class="tiles">
+        <div class="tile">
+          <div class="label">Total visits</div>
+          <div class="value" id="tTotal">—</div>
+          <div class="note">page views</div>
+        </div>
+        <div class="tile">
+          <div class="label">Unique visitors</div>
+          <div class="value" id="tUnique">—</div>
+          <div class="note" id="tUniqueNote">—</div>
+        </div>
+        <div class="tile">
+          <div class="label">Returning visitors</div>
+          <div class="value" id="tRepeat">—</div>
+          <div class="note" id="tAvg">—</div>
+        </div>
+        <div class="tile">
+          <div class="label">Link clicks</div>
+          <div class="value" id="tClicks">—</div>
+          <div class="note" id="tClicksNote">—</div>
+        </div>
+        <div class="tile">
+          <div class="label">Click rate</div>
+          <div class="value" id="tRate">—</div>
+          <div class="note">of visitors clicked at least one link</div>
+        </div>
+        <div class="tile">
+          <div class="label">Clicks per visit</div>
+          <div class="value" id="tPerVisit">—</div>
+          <div class="note">link clicks ÷ page views</div>
+        </div>
       </div>
-      <div class="tile">
-        <div class="label">Unique visitors (by IP)</div>
-        <div class="value" id="tUnique">—</div>
-      </div>
-      <div class="tile">
-        <div class="label">Avg. visits per visitor</div>
-        <div class="value" id="tAvg">—</div>
-      </div>
-      <div class="tile">
-        <div class="label">Repeat visitors</div>
-        <div class="value" id="tRepeat">—</div>
-      </div>
+
+      <section class="block">
+        <h2>Last 30 days</h2>
+        <p class="desc" id="chartDesc">Page views and link clicks per day.</p>
+        <div id="chartWrap">
+          <svg id="chartSvg"></svg>
+          <div id="chartTooltip"><span class="d"></span><br><span class="v"></span></div>
+        </div>
+        <div class="legend"><span><i style="background:var(--accent)"></i>Visits</span><span><i style="background:var(--pop)"></i>Link clicks</span></div>
+      </section>
+
+      <section class="block">
+        <h2>Top clicked links</h2>
+        <p class="desc">Which links people click — buttons, project cards, email, LinkedIn, downloads.</p>
+        <div id="linksWrap"></div>
+      </section>
+
+      <section class="block">
+        <h2>Visitors by IP</h2>
+        <p class="desc">Most recent first. "Repeat" means seen on more than one day. "Devices" counts separate browsers behind one IP — e.g. two phones on the same Wi-Fi.</p>
+        <div id="ipTableWrap"></div>
+      </section>
+
+      <section class="block">
+        <h2>Recent activity</h2>
+        <p class="desc">Last 60 page views and clicks, in your local time.</p>
+        <div id="recentTableWrap"></div>
+      </section>
     </div>
-
-    <section class="block">
-      <h2>Visits, last 30 days</h2>
-      <p class="desc">Page views per day, all pages combined.</p>
-      <div id="chartWrap">
-        <svg id="chartSvg" width="100%" height="180" style="display:block; overflow: visible;"></svg>
-        <div id="chartTooltip"><span class="d"></span><br><span class="v"></span></div>
-      </div>
-    </section>
-
-    <section class="block">
-      <h2>Visitors by IP</h2>
-      <p class="desc">Every distinct IP seen, sorted by number of visits — this is where repeat visits show up.</p>
-      <div id="ipTableWrap"></div>
-    </section>
-
-    <section class="block">
-      <h2>Recent activity</h2>
-      <p class="desc">Last 50 page views, most recent first.</p>
-      <div id="recentTableWrap"></div>
-    </section>
   </div>
 </div>
 
 <script>
-  /* ====== CONFIG: set this once the Worker is deployed ====== */
   const WORKER_URL = "https://uwaism-tracker.uwaismm05.workers.dev";
+  const LABELS = { all: "All traffic", linkedin: "LinkedIn", message: "Message", resume: "Resume", direct: "Direct" };
 
-  const gate = document.getElementById('gate');
-  const dashboard = document.getElementById('dashboard');
-  const tokenInput = document.getElementById('tokenInput');
-  const unlockBtn = document.getElementById('unlockBtn');
-  const gateErr = document.getElementById('gateErr');
+  const $ = (id) => document.getElementById(id);
+  const gate = $('gate');
+  const dashboard = $('dashboard');
+  const tokenInput = $('tokenInput');
+  const unlockBtn = $('unlockBtn');
+  const gateErr = $('gateErr');
+  let currentSource = 'all';
 
   function getToken() {
-    return sessionStorage.getItem('admin_token') || '';
+    try { return sessionStorage.getItem('admin_token') || ''; } catch (e) { return ''; }
   }
 
   async function tryLoad(token) {
     gateErr.textContent = '';
+    $('panel').classList.add('loading');
     try {
-      const res = await fetch(WORKER_URL + '/stats', {
+      const res = await fetch(WORKER_URL + '/stats?source=' + encodeURIComponent(currentSource), {
         headers: { 'Authorization': 'Bearer ' + token }
       });
       if (res.status === 401) {
+        gate.style.display = '';
+        dashboard.style.display = 'none';
         gateErr.textContent = 'Incorrect passphrase.';
         return false;
       }
@@ -259,7 +351,11 @@
         return false;
       }
       const data = await res.json();
-      sessionStorage.setItem('admin_token', token);
+      if (!('total_clicks' in data)) {
+        gateErr.textContent = 'The analytics Worker is out of date — redeploy worker.js, then refresh.';
+        return false;
+      }
+      try { sessionStorage.setItem('admin_token', token); } catch (e) {}
       gate.style.display = 'none';
       dashboard.style.display = 'block';
       render(data);
@@ -267,157 +363,247 @@
     } catch (e) {
       gateErr.textContent = 'Network error — check the Worker URL is set correctly.';
       return false;
+    } finally {
+      $('panel').classList.remove('loading');
     }
   }
 
   unlockBtn.addEventListener('click', () => tryLoad(tokenInput.value.trim()));
   tokenInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') unlockBtn.click(); });
+  $('refreshBtn').addEventListener('click', () => tryLoad(getToken()));
 
-  document.getElementById('refreshBtn')?.addEventListener('click', () => {
+  $('tabs').addEventListener('click', (e) => {
+    const tab = e.target.closest('.tab');
+    if (!tab || tab.dataset.source === currentSource) return;
+    currentSource = tab.dataset.source;
+    document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t === tab)));
     tryLoad(getToken());
   });
 
-  // auto-unlock if we already have a token this session
+  // "Don't track this browser" — tracker.js checks this flag (same origin as the site).
+  function ignoring() {
+    try { return localStorage.getItem('uw_ignore') === '1'; } catch (e) { return false; }
+  }
+  function paintIgnore() {
+    const on = ignoring();
+    $('ignoreBtn').textContent = on ? '✓ This browser is not tracked' : "Don't track this browser";
+    $('ignoreBtn').classList.toggle('on', on);
+  }
+  $('ignoreBtn').addEventListener('click', () => {
+    try {
+      if (ignoring()) localStorage.removeItem('uw_ignore');
+      else localStorage.setItem('uw_ignore', '1');
+    } catch (e) {}
+    paintIgnore();
+  });
+  paintIgnore();
+
   const existing = getToken();
   if (existing) tryLoad(existing);
 
-  function render(data) {
-    document.getElementById('updatedAt').textContent = new Date().toLocaleString();
-    document.getElementById('tTotal').textContent = data.total_visits.toLocaleString();
-    document.getElementById('tUnique').textContent = data.unique_visitors.toLocaleString();
-    const avg = data.unique_visitors > 0 ? (data.total_visits / data.unique_visitors) : 0;
-    document.getElementById('tAvg').textContent = avg.toFixed(1);
-    const repeatCount = data.top_ips.filter(r => r.visits > 1).length;
-    document.getElementById('tRepeat').textContent = repeatCount.toLocaleString();
+  function pctText(n) {
+    return (n * 100).toFixed(n > 0 && n < 0.1 ? 1 : 0) + '%';
+  }
 
-    renderChart(data.daily);
-    renderIpTable(data.top_ips);
+  function render(data) {
+    $('updatedAt').textContent = new Date().toLocaleString();
+
+    // tab badges: visits per source, with "all" as the sum
+    let all = 0;
+    (data.by_source || []).forEach(r => {
+      all += r.visits;
+      const el = document.querySelector(`[data-count="${r.source}"]`);
+      if (el) el.textContent = r.visits.toLocaleString();
+    });
+    document.querySelector('[data-count="all"]').textContent = all.toLocaleString();
+
+    const visits = data.total_visits, people = data.unique_visitors, clicks = data.total_clicks;
+    $('tTotal').textContent = visits.toLocaleString();
+    $('tUnique').textContent = people.toLocaleString();
+    $('tUniqueNote').textContent = `${data.unique_ips.toLocaleString()} distinct IP ${data.unique_ips === 1 ? 'address' : 'addresses'}`;
+    $('tRepeat').textContent = data.repeat_visitors.toLocaleString();
+    $('tAvg').textContent = people > 0 ? `${(visits / people).toFixed(1)} visits per visitor` : '—';
+    $('tClicks').textContent = clicks.toLocaleString();
+    $('tClicksNote').textContent = `by ${data.clickers.toLocaleString()} ${data.clickers === 1 ? 'visitor' : 'visitors'}`;
+    $('tRate').textContent = people > 0 ? pctText(data.clickers / people) : '—';
+    $('tPerVisit').textContent = visits > 0 ? (clicks / visits).toFixed(2) : '—';
+    $('chartDesc').textContent = `Page views and link clicks per day — ${LABELS[currentSource]}.`;
+
+    renderChart(data.daily, data.daily_clicks);
+    renderLinks(data.top_links);
+    renderIpTable(data.ips);
     renderRecentTable(data.recent);
   }
 
-  function renderChart(daily) {
-    const svg = document.getElementById('chartSvg');
-    const tooltip = document.getElementById('chartTooltip');
+  function renderChart(daily, dailyClicks) {
+    const svg = $('chartSvg');
+    const tooltip = $('chartTooltip');
+    const ns = 'http://www.w3.org/2000/svg';
     svg.innerHTML = '';
 
-    if (!daily || daily.length === 0) {
-      svg.outerHTML = '<div class="empty">No visits recorded yet.</div>';
-      return;
+    // continuous 30-day axis (UTC dates, matching the database)
+    const vMap = Object.fromEntries((daily || []).map(d => [d.day, d.n]));
+    const cMap = Object.fromEntries((dailyClicks || []).map(d => [d.day, d.n]));
+    const days = [];
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(Date.now() - i * 864e5).toISOString().slice(0, 10);
+      days.push({ day: d, v: vMap[d] || 0, c: cMap[d] || 0 });
     }
 
-    const W = svg.clientWidth || 900;
-    const H = 180;
-    const padL = 4, padR = 4, padT = 10, padB = 24;
-    const innerW = W - padL - padR;
-    const innerH = H - padT - padB;
+    const W = svg.clientWidth || 900, H = 190;
+    const padL = 2, padR = 2, padT = 10, padB = 24;
+    const innerW = W - padL - padR, innerH = H - padT - padB;
+    const max = Math.max(1, ...days.map(d => Math.max(d.v, d.c)));
+    const slot = innerW / days.length;
+    const barW = Math.max(2, (slot - 3) / 2);
 
-    const max = Math.max(...daily.map(d => d.n), 1);
-    const barGap = 3;
-    const barW = Math.max(2, innerW / daily.length - barGap);
-
-    const ns = 'http://www.w3.org/2000/svg';
-
-    daily.forEach((d, i) => {
-      const x = padL + i * (innerW / daily.length);
-      const h = (d.n / max) * innerH;
-      const y = padT + innerH - h;
-
-      const rect = document.createElementNS(ns, 'rect');
-      rect.setAttribute('x', x);
-      rect.setAttribute('y', y);
-      rect.setAttribute('width', barW);
-      rect.setAttribute('height', Math.max(h, 1));
-      rect.setAttribute('rx', 2);
-      rect.setAttribute('fill', '#7C5CFC');
-      rect.setAttribute('opacity', '0.85');
-      rect.style.cursor = 'pointer';
-
-      rect.addEventListener('mouseenter', () => {
-        rect.setAttribute('opacity', '1');
-        rect.setAttribute('fill', '#C6FF6B');
+    days.forEach((d, i) => {
+      const x = padL + i * slot;
+      [[d.v, '#7C5CFC', 0], [d.c, '#C6FF6B', barW]].forEach(([n, color, off]) => {
+        const h = (n / max) * innerH;
+        const r = document.createElementNS(ns, 'rect');
+        r.setAttribute('x', x + off);
+        r.setAttribute('y', padT + innerH - Math.max(h, n ? 1 : 0));
+        r.setAttribute('width', barW);
+        r.setAttribute('height', Math.max(h, n ? 1 : 0));
+        r.setAttribute('rx', 1.5);
+        r.setAttribute('fill', color);
+        r.setAttribute('opacity', '0.85');
+        svg.appendChild(r);
+      });
+      // full-height hit area for the tooltip
+      const hit = document.createElementNS(ns, 'rect');
+      hit.setAttribute('x', x);
+      hit.setAttribute('y', padT);
+      hit.setAttribute('width', slot);
+      hit.setAttribute('height', innerH);
+      hit.setAttribute('fill', 'transparent');
+      hit.addEventListener('mouseenter', () => {
         tooltip.style.opacity = '1';
-        tooltip.style.left = (x + barW / 2) + 'px';
-        tooltip.style.top = y + 'px';
+        tooltip.style.left = (x + slot / 2) + 'px';
+        tooltip.style.top = (padT + innerH - (Math.max(d.v, d.c) / max) * innerH) + 'px';
         tooltip.querySelector('.d').textContent = d.day;
-        tooltip.querySelector('.v').textContent = d.n + (d.n === 1 ? ' visit' : ' visits');
+        tooltip.querySelector('.v').innerHTML =
+          `<b style="color:#B3A1FF">${d.v}</b> visits · <b style="color:var(--pop)">${d.c}</b> clicks`;
       });
-      rect.addEventListener('mouseleave', () => {
-        rect.setAttribute('opacity', '0.85');
-        rect.setAttribute('fill', '#7C5CFC');
-        tooltip.style.opacity = '0';
-      });
-
-      svg.appendChild(rect);
+      hit.addEventListener('mouseleave', () => { tooltip.style.opacity = '0'; });
+      svg.appendChild(hit);
     });
 
-    // baseline
-    const baseline = document.createElementNS(ns, 'line');
-    baseline.setAttribute('x1', padL);
-    baseline.setAttribute('x2', W - padR);
-    baseline.setAttribute('y1', padT + innerH);
-    baseline.setAttribute('y2', padT + innerH);
-    baseline.setAttribute('stroke', '#2A2440');
-    svg.appendChild(baseline);
+    const base = document.createElementNS(ns, 'line');
+    base.setAttribute('x1', padL);
+    base.setAttribute('x2', W - padR);
+    base.setAttribute('y1', padT + innerH);
+    base.setAttribute('y2', padT + innerH);
+    base.setAttribute('stroke', '#2A2440');
+    svg.appendChild(base);
 
-    // first/last date labels
-    [daily[0], daily[daily.length - 1]].forEach((d, idx) => {
-      const label = document.createElementNS(ns, 'text');
-      label.setAttribute('x', idx === 0 ? padL : W - padR);
-      label.setAttribute('y', H - 6);
-      label.setAttribute('fill', '#6E668A');
-      label.setAttribute('font-size', '10');
-      label.setAttribute('font-family', 'JetBrains Mono, monospace');
-      label.setAttribute('text-anchor', idx === 0 ? 'start' : 'end');
-      label.textContent = d.day;
-      svg.appendChild(label);
+    [days[0], days[days.length - 1]].forEach((d, idx) => {
+      const t = document.createElementNS(ns, 'text');
+      t.setAttribute('x', idx === 0 ? padL : W - padR);
+      t.setAttribute('y', H - 6);
+      t.setAttribute('fill', '#6E668A');
+      t.setAttribute('font-size', '10');
+      t.setAttribute('font-family', 'JetBrains Mono, monospace');
+      t.setAttribute('text-anchor', idx === 0 ? 'start' : 'end');
+      t.textContent = d.day;
+      svg.appendChild(t);
     });
   }
 
+  function table(head, rows) {
+    return `<div class="table-scroll"><table><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
+
+  function renderLinks(rows) {
+    const el = $('linksWrap');
+    if (!rows || rows.length === 0) {
+      el.innerHTML = '<div class="empty">No link clicks recorded yet.</div>';
+      return;
+    }
+    el.innerHTML = table(
+      '<th>Link</th><th class="num">Clicks</th><th class="num">People</th>',
+      rows.map(r => `
+        <tr>
+          <td>${escapeHtml(r.label || '—')}<div class="href">${escapeHtml(prettyHref(r.href))}</div></td>
+          <td class="num">${r.clicks}</td>
+          <td class="num">${r.people}</td>
+        </tr>`).join('')
+    );
+  }
+
   function renderIpTable(rows) {
-    const el = document.getElementById('ipTableWrap');
+    const el = $('ipTableWrap');
     if (!rows || rows.length === 0) {
       el.innerHTML = '<div class="empty">No visitors recorded yet.</div>';
       return;
     }
-    const body = rows.map(r => `
-      <tr>
-        <td class="mono">${escapeHtml(r.ip)}</td>
-        <td>${r.visits} ${r.visits > 1 ? '<span class="repeat-badge">repeat</span>' : ''}</td>
-        <td class="country">${r.country || '—'}</td>
-        <td class="mono" style="font-size:0.78rem;color:var(--ink-soft)">${formatDate(r.first_seen)}</td>
-        <td class="mono" style="font-size:0.78rem;color:var(--ink-soft)">${formatDate(r.last_seen)}</td>
-      </tr>`).join('');
-    el.innerHTML = `
-      <table>
-        <thead><tr><th>IP address</th><th>Visits</th><th>Country</th><th>First seen</th><th>Last seen</th></tr></thead>
-        <tbody>${body}</tbody>
-      </table>`;
+    el.innerHTML = table(
+      '<th>IP address</th><th>Device</th><th class="num">Devices</th><th class="num">Visits</th><th class="num">Clicks</th><th>Country</th><th>First seen</th><th>Last seen</th>',
+      rows.map(r => `
+        <tr>
+          <td class="mono tiny">${escapeHtml(r.ip)}</td>
+          <td class="tiny">${escapeHtml(device(r.ua))}</td>
+          <td class="num">${r.devices}</td>
+          <td class="num">${r.visits} ${r.days > 1 ? '<span class="badge repeat">repeat</span>' : ''}</td>
+          <td class="num">${r.clicks}</td>
+          <td class="country">${escapeHtml(r.country || '—')}</td>
+          <td class="mono tiny dim">${localTime(r.first_seen)}</td>
+          <td class="mono tiny dim">${localTime(r.last_seen)}</td>
+        </tr>`).join('')
+    );
   }
 
   function renderRecentTable(rows) {
-    const el = document.getElementById('recentTableWrap');
+    const el = $('recentTableWrap');
     if (!rows || rows.length === 0) {
       el.innerHTML = '<div class="empty">No activity yet.</div>';
       return;
     }
-    const body = rows.map(r => `
-      <tr>
-        <td class="mono" style="font-size:0.78rem;color:var(--ink-soft)">${formatDate(r.created_at)}</td>
-        <td class="mono">${escapeHtml(r.ip)}</td>
-        <td>${escapeHtml(r.source || 'direct')}</td>
-        <td>${escapeHtml(r.path || '/')}</td>
-        <td class="country">${r.country || '—'}</td>
-      </tr>`).join('');
-    el.innerHTML = `
-      <table>
-        <thead><tr><th>Time</th><th>IP address</th><th>Source</th><th>Page</th><th>Country</th></tr></thead>
-        <tbody>${body}</tbody>
-      </table>`;
+    el.innerHTML = table(
+      '<th>Time</th><th>Type</th><th>IP address</th><th>Device</th><th>Source</th><th>Page / link</th><th>Country</th>',
+      rows.map(r => `
+        <tr>
+          <td class="mono tiny dim">${localTime(r.created_at)}</td>
+          <td><span class="badge ${r.kind}">${r.kind === 'click' ? 'click' : 'view'}</span></td>
+          <td class="mono tiny">${escapeHtml(r.ip)}</td>
+          <td class="tiny">${escapeHtml(device(r.ua))}</td>
+          <td class="tiny">${escapeHtml(LABELS[r.source] || r.source || 'Direct')}</td>
+          <td class="tiny">${escapeHtml(r.what || '/')}</td>
+          <td class="country">${escapeHtml(r.country || '—')}</td>
+        </tr>`).join('')
+    );
   }
 
-  function formatDate(s) {
+  // Rough device + browser from the user agent, enough to tell visitors apart.
+  function device(ua) {
+    if (!ua) return '—';
+    const os = /iPhone/.test(ua) ? 'iPhone'
+      : /iPad/.test(ua) ? 'iPad'
+      : /Android/.test(ua) ? 'Android'
+      : /Macintosh|Mac OS X/.test(ua) ? 'Mac'
+      : /Windows/.test(ua) ? 'Windows'
+      : /Linux/.test(ua) ? 'Linux' : 'Other';
+    const app = /LinkedInApp/i.test(ua) ? 'LinkedIn app'
+      : /Instagram/.test(ua) ? 'Instagram app'
+      : /Edg\//.test(ua) ? 'Edge'
+      : /CriOS|Chrome\//.test(ua) ? 'Chrome'
+      : /FxiOS|Firefox\//.test(ua) ? 'Firefox'
+      : /Safari\//.test(ua) ? 'Safari' : '';
+    return app ? `${os} · ${app}` : os;
+  }
+
+  function prettyHref(h) {
+    if (!h) return '';
+    return h.replace(/^https?:\/\/(www\.)?uwaism\.com/, '').replace(/^mailto:/, 'email: ') || '/';
+  }
+
+  // Database times are UTC ("YYYY-MM-DD HH:MM:SS").
+  function localTime(s) {
     if (!s) return '—';
-    return s.replace('T', ' ').replace('Z', '').slice(0, 16);
+    const d = new Date(s.replace(' ', 'T') + 'Z');
+    if (isNaN(d)) return escapeHtml(s);
+    return d.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
   }
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
