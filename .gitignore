@@ -1,1 +1,5 @@
 .wrangler/
+
+# Originals kept locally; the site uses the cleaned copies
+coffeedashboard/1-original.png
+coffeedashboard/coffeeOrdersData _MohamedUwais.xlsx

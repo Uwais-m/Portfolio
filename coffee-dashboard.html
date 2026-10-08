@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Coffee Sales Dashboard — Mohamed Uwais</title>
+<meta name="description" content="An Excel dashboard analyzing 1,000 coffee order records from January 2019 to August 2022, built with XLOOKUP, pivot tables, pivot charts, slicers and a timeline.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0E0B18;
+    --bg-raised: #17132480;
+    --ink: #F2F0F8;
+    --ink-soft: #A79FC0;
+    --ink-muted: #6E668A;
+    --line: #2A2440;
+    --accent: #7C5CFC;
+    --accent-soft: #7C5CFC33;
+    --pop: #C6FF6B;
+    --pop-ink: #12180A;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    background-image:
+      radial-gradient(60% 40% at 85% 0%, #7C5CFC26 0%, transparent 60%),
+      radial-gradient(50% 35% at 10% 15%, #C6FF6B14 0%, transparent 60%);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  h1, h2, h3, .brand { font-family: 'Sora', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  a { color: inherit; }
+  img { max-width: 100%; display: block; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  @media (max-width: 640px) { .wrap { padding: 0 16px; } }
+
+  /* Nav */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding-top: env(safe-area-inset-top, 0px);
+    background: #0E0B18CC;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .brand {
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+  .brand span { color: var(--accent); }
+  .navlinks { display: flex; gap: 30px; list-style: none; margin: 0; padding: 0; }
+  .navlinks a {
+    text-decoration: none;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    transition: color 0.15s ease;
+  }
+  .navlinks a:hover { color: var(--ink); }
+  @media (max-width: 640px) { .navlinks { display: none; } }
+
+  /* Header */
+  header.project { padding: 70px 0 40px; }
+  .back {
+    display: inline-flex;
+    gap: 6px;
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    text-decoration: none;
+    margin-bottom: 30px;
+  }
+  .back:hover { color: var(--ink); }
+  .tag {
+    font-size: 0.78rem;
+    color: var(--pop);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-size: clamp(2.2rem, 5.5vw, 3.6rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 20px;
+  }
+  .lede {
+    font-size: 1.08rem;
+    color: var(--ink-soft);
+    line-height: 1.65;
+    max-width: 62ch;
+    margin: 0 0 32px;
+  }
+  .ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 26px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: transform 0.15s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--pop); color: var(--pop-ink); }
+  .btn-ghost { border: 1px solid var(--line); color: var(--ink); }
+
+  .meta-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-top: 48px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+  }
+  .meta-row .num { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; font-weight: 500; }
+  .meta-row .lbl { color: var(--ink-soft); font-size: 0.84rem; margin-top: 4px; }
+  @media (max-width: 640px) { .meta-row { grid-template-columns: 1fr 1fr; } }
+
+  /* Screenshots */
+  figure { margin: 0; }
+  .shot {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff;
+    transition: border-color 0.15s ease;
+  }
+  a:hover > .shot { border-color: var(--accent); }
+  figcaption { color: var(--ink-muted); font-size: 0.84rem; margin-top: 10px; }
+  .hero-shot { margin-bottom: 20px; }
+
+  /* Sections */
+  section { padding: 70px 0; border-top: 1px solid var(--line); }
+  .section-tag {
+    font-size: 0.8rem;
+    color: var(--accent);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 14px;
+  }
+  h2 {
+    font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 32px;
+  }
+
+  /* Findings */
+  .findings {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 18px;
+  }
+  .finding {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px;
+    background: var(--bg-raised);
+  }
+  .finding .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: var(--pop);
+    margin-bottom: 8px;
+  }
+  .finding .what { font-weight: 600; margin-bottom: 6px; }
+  .finding p { color: var(--ink-soft); font-size: 0.9rem; line-height: 1.55; margin: 0; }
+
+  /* Skills */
+  .skills { display: flex; flex-direction: column; }
+  .skill {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 28px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .skill:last-child { border-bottom: none; }
+  .skill .name { font-weight: 600; }
+  .skill .desc { color: var(--ink-soft); font-size: 0.94rem; line-height: 1.6; }
+  @media (max-width: 640px) { .skill { grid-template-columns: 1fr; gap: 6px; } }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  @media (max-width: 780px) { .gallery { grid-template-columns: 1fr; } }
+
+  .note {
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 18px 22px;
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    background: var(--bg-raised);
+  }
+  .note strong { color: var(--ink); }
+
+  .download-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 40px;
+    background: var(--bg-raised);
+  }
+  .download-box h2 { margin: 0 0 10px; font-size: 1.6rem; }
+  .download-box p { color: var(--ink-soft); margin: 0; max-width: 48ch; line-height: 1.6; }
+  @media (max-width: 640px) { .download-box { padding: 28px 22px; } }
+
+  footer {
+    padding: 36px 0 60px;
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <a class="brand" href="index.html">UWAIS<span>.</span></a>
+    <ul class="navlinks">
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#experience">Experience</a></li>
+      <li><a href="index.html#work">Portfolio</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="project">
+  <div class="wrap">
+    <a class="back" href="index.html#work">← Back to portfolio</a>
+    <div class="tag">Data analysis · Excel</div>
+    <h1>Coffee Sales Dashboard</h1>
+    <p class="lede">An interactive Excel dashboard built from 1,000 coffee order records covering January 2019 to August 2022. The dataset includes customer, product, coffee type, roast type, size, country, quantity, pricing, and sales information. Slicers and a timeline filter every chart at once.</p>
+    <div class="ctas">
+      <a class="btn btn-primary" href="coffeedashboard/coffee-sales-dashboard.xlsx" download>Download the workbook (.xlsx)</a>
+      <a class="btn btn-ghost" href="#findings">Key findings ↓</a>
+    </div>
+
+    <div class="meta-row">
+      <div><div class="num">1,000</div><div class="lbl">Order line items</div></div>
+      <div><div class="num">$45,135</div><div class="lbl">Total sales</div></div>
+      <div><div class="num">3</div><div class="lbl">Countries</div></div>
+      <div><div class="num">2019–22</div><div class="lbl">Jan 2019 – Aug 2022</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <figure class="hero-shot">
+    <a href="coffeedashboard/dashboard.png" target="_blank" rel="noopener">
+      <div class="shot"><img src="coffeedashboard/dashboard.png" width="1394" height="918" alt="Excel dashboard with a timeline and slicers for roast type, size and loyalty card, a line chart of monthly sales by coffee type, a bar chart of sales by country, and a bar chart of the top five customers."></div>
+    </a>
+    <figcaption>The full dashboard. Click to open full size.</figcaption>
+  </figure>
+</div>
+
+<section id="findings">
+  <div class="wrap">
+    <div class="section-tag">Key findings</div>
+    <h2>What the data shows</h2>
+    <div class="findings">
+      <div class="finding">
+        <div class="num">~79%</div>
+        <div class="what">United States leads revenue</div>
+        <p>The US generated about $35,639 in sales, well ahead of Ireland ($6,697) and the United Kingdom ($2,799).</p>
+      </div>
+      <div class="finding">
+        <div class="num">$23,786</div>
+        <div class="what">2.5 kg is the top size</div>
+        <p>The largest bag size brought in more than half of total sales.</p>
+      </div>
+      <div class="finding">
+        <div class="num">$17,354</div>
+        <div class="what">Light roast sells best</div>
+        <p>Light roast generated the highest sales of the three roast types.</p>
+      </div>
+      <div class="finding">
+        <div class="num">$12,306</div>
+        <div class="what">Excelsa is the top coffee type</div>
+        <p>Excelsa led the four coffee types in sales.</p>
+      </div>
+      <div class="finding">
+        <div class="num">Feb 2020</div>
+        <div class="what">Peak month</div>
+        <p>The highest monthly sales in the period, at about $1,798.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-tag">How it was built</div>
+    <h2>Excel skills used</h2>
+    <div class="skills">
+      <div class="skill">
+        <div class="name">XLOOKUP / lookup functions</div>
+        <div class="desc">Combined customer and product information from separate tables into the order data.</div>
+      </div>
+      <div class="skill">
+        <div class="name">Pivot tables</div>
+        <div class="desc">Analyzed sales by country, coffee type, roast type, size, and customer.</div>
+      </div>
+      <div class="skill">
+        <div class="name">Pivot charts</div>
+        <div class="desc">Visualized sales trends over time and comparisons across countries and customers.</div>
+      </div>
+      <div class="skill">
+        <div class="name">Slicers &amp; timeline</div>
+        <div class="desc">Interactive filtering by roast type, size, loyalty card status, and order date. Every chart updates together.</div>
+      </div>
+      <div class="skill">
+        <div class="name">Data cleaning &amp; formatting</div>
+        <div class="desc">Organized the raw order data and calculated sales for each line item.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-tag">Closer look</div>
+    <h2>Charts in detail</h2>
+    <div class="gallery">
+      <figure>
+        <a href="coffeedashboard/sales-over-time.png" target="_blank" rel="noopener">
+          <div class="shot"><img src="coffeedashboard/sales-over-time.png" width="862" height="658" loading="lazy" alt="Line chart of monthly sales from January 2019 to August 2022, with one line each for Arabica, Excelsa, Liberica and Robusta."></div>
+        </a>
+        <figcaption>Monthly sales by coffee type, 2019–2022.</figcaption>
+      </figure>
+      <figure>
+        <a href="coffeedashboard/country-and-customers.png" target="_blank" rel="noopener">
+          <div class="shot"><img src="coffeedashboard/country-and-customers.png" width="524" height="710" loading="lazy" alt="Size and loyalty card slicers above bar charts of sales by country and the top five customers by sales."></div>
+        </a>
+        <figcaption>Sales by country and the top 5 customers, with slicers.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="note">
+      <strong>A note on the data:</strong> the workbook has 1,000 order rows but 957 unique Order IDs, because some orders contain more than one product. Each row is a line item, so totals are summed across line items rather than counted per order. Customer names and contact details in the dataset are sample data, not real people.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="download-box">
+      <div>
+        <h2>Explore it yourself</h2>
+        <p>Download the workbook and open it in Excel to use the slicers and timeline, and to see the formulas and pivot tables behind the dashboard.</p>
+      </div>
+      <a class="btn btn-primary" href="coffeedashboard/coffee-sales-dashboard.xlsx" download>Download .xlsx</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">© 2026 Mohamed Uwais · uwaism.com</div>
+</footer>
+
+<script src="tracker.js" defer></script>
+</body>
+</html>

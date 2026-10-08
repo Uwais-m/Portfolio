@@ -302,6 +302,17 @@
     gap: 6px;
   }
 
+  .proj-card .thumb {
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    aspect-ratio: 3 / 2;
+    transition: border-color 0.15s ease;
+  }
+  .proj-card .thumb:hover { border-color: var(--accent); }
+  .proj-card .thumb img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+
   /* Contact */
   .contact-box {
     display: flex;
@@ -422,15 +433,18 @@
     <h2 class="section-title">Tools & projects.</h2>
     <div class="card-grid">
       <div class="proj-card">
+        <a class="thumb" href="fire-calculator.html"><img src="fire-calculator-preview.png" width="720" height="480" loading="lazy" alt="Preview of the FIRE Number Calculator inputs"></a>
         <span class="tag">Interactive tool</span>
         <h3>FIRE Number Calculator</h3>
         <p>A calculator that estimates the portfolio size needed for financial independence, projects a savings timeline, and illustrates generic model asset allocations by risk profile — built end-to-end in HTML, CSS, and JavaScript.</p>
         <a class="link" href="fire-calculator.html">Launch the calculator →</a>
       </div>
       <div class="proj-card">
-        <span class="tag">Coming soon</span>
-        <h3>More in progress</h3>
-        <p>This section will grow as more research and analysis projects are added — check back for updates.</p>
+        <a class="thumb" href="coffee-dashboard.html"><img src="coffeedashboard/dashboard.png" width="1394" height="918" loading="lazy" alt="Preview of the Coffee Sales Dashboard in Excel"></a>
+        <span class="tag">Data analysis · Excel</span>
+        <h3>Coffee Sales Dashboard</h3>
+        <p>An interactive Excel dashboard analyzing 1,000 coffee orders from 2019–2022 — built with XLOOKUP, pivot tables, pivot charts, slicers, and a timeline to break down sales by country, product, roast, and customer.</p>
+        <a class="link" href="coffee-dashboard.html">View the project →</a>
       </div>
     </div>
   </div>
