@@ -347,7 +347,9 @@
         return false;
       }
       if (!res.ok) {
-        gateErr.textContent = 'Could not reach the analytics service.';
+        const detail = await res.json().then(d => d.error).catch(() => '');
+        gateErr.textContent = 'Could not reach the analytics service' +
+          (detail ? ': ' + detail : ` (HTTP ${res.status}).`);
         return false;
       }
       const data = await res.json();

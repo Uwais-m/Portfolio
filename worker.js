@@ -52,10 +52,24 @@ async function ensureSchema(db) {
     db.prepare(`CREATE INDEX IF NOT EXISTS idx_clicks_ip ON clicks(ip)`),
     db.prepare(`CREATE INDEX IF NOT EXISTS idx_clicks_created ON clicks(created_at)`),
   ]);
-  try {
-    await db.prepare(`ALTER TABLE visits ADD COLUMN visitor_id TEXT`).run();
-  } catch (err) {
-    if (!/duplicate column/i.test(String(err))) throw err;
+  // The live table predates some columns, so add whatever is missing.
+  const wanted = {
+    visitor_id: "TEXT",
+    path: "TEXT",
+    referrer: "TEXT",
+    source: "TEXT NOT NULL DEFAULT 'direct'",
+    user_agent: "TEXT",
+    country: "TEXT",
+  };
+  const { results } = await db.prepare(`PRAGMA table_info(visits)`).all();
+  const have = new Set((results || []).map((c) => c.name));
+  for (const [name, type] of Object.entries(wanted)) {
+    if (have.has(name)) continue;
+    try {
+      await db.prepare(`ALTER TABLE visits ADD COLUMN ${name} ${type}`).run();
+    } catch (err) {
+      if (!/duplicate column/i.test(String(err))) throw err;
+    }
   }
   schemaReady = true;
 }
@@ -82,6 +96,7 @@ export default {
         return await handleStats(request, env, origin, url);
       }
     } catch (err) {
+      console.error(url.pathname, String(err), err && err.cause ? String(err.cause) : "");
       return json({ ok: false, error: String(err) }, 500, origin);
     }
 
