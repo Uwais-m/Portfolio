@@ -527,32 +527,10 @@
       });
     }
 
-    // order-book style depth bars, pulsing gently on the right
-    const depthBars = Array.from({ length: 14 }, (_, i) => ({
-      y: 0.10 + i * 0.06,
-      len: 0.12 + Math.random() * 0.4,
-      side: Math.random() > 0.5 ? 1 : -1,
-      speed: 0.0008 + Math.random() * 0.001,
-      phase: Math.random() * Math.PI * 2,
-    }));
-
-    function drawDepth(t) {
-      const originX = W * 0.985;
-      depthBars.forEach(b => {
-        const wobble = 0.85 + 0.15 * Math.sin(t * b.speed * 1000 + b.phase);
-        const barLen = b.len * W * 0.16 * wobble;
-        const y = b.y * H;
-        const color = b.side === 1 ? 'rgba(198,255,107,0.09)' : 'rgba(255,107,122,0.075)';
-        ctx.fillStyle = color;
-        ctx.fillRect(originX - barLen, y, barLen, 4);
-      });
-    }
-
     let t = 0;
     function draw() {
       ctx.clearRect(0, 0, W, H);
       drawGrid();
-      drawDepth(t);
       drawSparks();
       t++;
       requestAnimationFrame(draw);

@@ -51,7 +51,7 @@ Type: **Sora** (600–800) for headings and the brand mark, **Inter** for body,
 ### Hero background
 
 `index.html`'s hero has an ambient "market texture" animation behind the copy:
-a faint price grid, gently pulsing order-book depth bars on the far right, small
+a faint price grid, small
 drifting sparkline cards, plus three DOM rows of scrolling newswire headlines and a
 rates ticker. All of it is **deliberately faint** and masked out by a gradient overlay
 before it reaches the headline on the left — it should read as texture, not as a graphic.
