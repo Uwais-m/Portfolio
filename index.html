@@ -72,6 +72,7 @@
     transition: color 0.15s ease;
   }
   .navlinks a:hover { color: var(--ink); }
+  @media (max-width: 900px) { .navlinks { gap: 18px; } .navlinks a { font-size: 0.86rem; } }
   @media (max-width: 640px) { .navlinks { display: none; } }
 
   /* Hero */
@@ -146,14 +147,21 @@
     margin-bottom: 28px;
   }
   h1.headline {
-    font-size: clamp(2.4rem, 6vw, 4.2rem);
+    font-size: clamp(2.6rem, 9vw, 5.4rem);
     font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    margin: 0 0 22px;
-    max-width: 16ch;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin: 0 0 18px;
   }
-  h1.headline .grad {
+  .motto {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(1.25rem, 3vw, 1.8rem);
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    margin: 0 0 22px;
+  }
+  .motto .grad {
     background: linear-gradient(90deg, var(--accent), var(--pop));
     -webkit-background-clip: text;
     background-clip: text;
@@ -182,73 +190,73 @@
   .btn-primary { background: var(--pop); color: var(--pop-ink); }
   .btn-ghost { background: transparent; border: 1px solid var(--line); color: var(--ink); }
 
-  .stat-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-top: 70px;
-    padding-top: 36px;
-    border-top: 1px solid var(--line);
-  }
-  .stat .num {
-    font-family: 'Sora', sans-serif;
-    font-size: 1.9rem;
-    font-weight: 700;
-  }
-  .stat .lbl { color: var(--ink-soft); font-size: 0.85rem; margin-top: 4px; }
-  @media (max-width: 640px) { .stat-row { grid-template-columns: 1fr; gap: 20px; } }
-
   /* Section shell */
   section { padding: 90px 0; border-top: 1px solid var(--line); }
-  .section-tag {
-    font-size: 0.8rem;
-    color: var(--accent);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 14px;
-  }
+  @media (max-width: 640px) { section { padding: 64px 0; } }
   h2.section-title {
-    font-size: clamp(1.7rem, 4vw, 2.4rem);
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
     font-weight: 700;
     letter-spacing: -0.01em;
-    margin: 0 0 40px;
-    max-width: 22ch;
+    margin: 0 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  h2.section-title::before {
+    content: "";
+    width: 6px;
+    height: 0.9em;
+    border-radius: 3px;
+    background: linear-gradient(180deg, var(--accent), var(--pop));
+    flex-shrink: 0;
+  }
+  .section-sub {
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0 0 36px;
+    max-width: 60ch;
   }
 
   /* About */
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: 60px;
-    align-items: start;
-  }
-  .about-grid p {
+  .about-text p {
     color: var(--ink-soft);
     line-height: 1.75;
-    font-size: 1rem;
+    font-size: 1.02rem;
     margin: 0 0 18px;
+    max-width: 68ch;
   }
-  .creds {
+
+  /* Certifications */
+  .cert-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  @media (max-width: 780px) { .cert-grid { grid-template-columns: 1fr; } }
+  .cert {
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 26px;
+    background: var(--bg-raised);
     display: flex;
     flex-direction: column;
-    gap: 0;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    overflow: hidden;
+    gap: 8px;
   }
-  .cred {
-    display: flex;
-    justify-content: space-between;
-    gap: 14px;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--line);
-    font-size: 0.9rem;
+  .cert .code { font-family: 'Sora', sans-serif; font-size: 1.9rem; font-weight: 800; letter-spacing: -0.01em; }
+  .cert .full { color: var(--ink-soft); font-size: 0.92rem; line-height: 1.5; flex-grow: 1; }
+  .status {
+    align-self: flex-start;
+    margin-top: 8px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    padding: 4px 11px;
+    border-radius: 100px;
+    color: var(--pop);
+    background: #C6FF6B14;
+    border: 1px solid #C6FF6B33;
   }
-  .cred:last-child { border-bottom: none; }
-  .cred .name { font-weight: 600; }
-  .cred .meta { color: var(--ink-soft); text-align: right; }
-  @media (max-width: 780px) { .about-grid { grid-template-columns: 1fr; } }
+  .status.progress { color: #B3A1FF; background: var(--accent-soft); border-color: #7C5CFC55; }
 
   /* Experience */
   .timeline { display: flex; flex-direction: column; }
@@ -291,15 +299,7 @@
   }
   .proj-card h3 { font-size: 1.25rem; margin: 0; }
   .proj-card p { color: var(--ink-soft); font-size: 0.92rem; line-height: 1.6; margin: 0; flex-grow: 1; }
-  .proj-card .link {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--pop);
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
+  .proj-card .btn { align-self: flex-start; margin-top: 6px; }
 
   .proj-card .thumb {
     display: block;
@@ -313,20 +313,40 @@
   .proj-card .thumb img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
 
   /* Contact */
-  .contact-box {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 24px;
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    padding: 46px;
-    background: var(--bg-raised);
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
   }
-  .contact-box h2 { margin: 0 0 10px; font-size: 1.8rem; }
-  .contact-box p { color: var(--ink-soft); margin: 0; max-width: 42ch; }
-  .contact-links { display: flex; gap: 14px; flex-wrap: wrap; }
+  @media (max-width: 640px) { .contact-grid { grid-template-columns: 1fr; } }
+  .contact-card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 24px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--bg-raised);
+    text-decoration: none;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .contact-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .contact-card .icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: var(--accent-soft);
+    color: var(--ink);
+    flex-shrink: 0;
+  }
+  .contact-card .icon svg { width: 26px; height: 26px; }
+  .contact-card .what, .contact-card .value { display: block; }
+  .contact-card .what { font-weight: 600; font-size: 1.05rem; }
+  .contact-card .value { color: var(--ink-soft); font-size: 0.9rem; margin-top: 3px; word-break: break-all; }
+  .contact-card .go { margin-left: auto; color: var(--pop); font-weight: 600; font-size: 0.9rem; white-space: nowrap; }
+  @media (max-width: 400px) { .contact-card .go { display: none; } }
 
   footer {
     padding: 36px 0 60px;
@@ -340,11 +360,13 @@
 
 <nav>
   <div class="inner">
-    <a class="brand" href="#top">UWAIS<span>.</span></a>
+    <a class="brand" href="#top">Home<span>.</span></a>
     <ul class="navlinks">
       <li><a href="#about">About</a></li>
+      <li><a href="#certifications">Certifications</a></li>
       <li><a href="#experience">Experience</a></li>
-      <li><a href="#work">Portfolio</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#projects">Projects</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
   </div>
@@ -356,26 +378,12 @@
     <div class="hero-wire-layer" id="heroWireLayer"></div>
     <div class="wrap">
       <span class="eyebrow">● Open to client relations & investment research roles</span>
-      <h1 class="headline">Analytical by training.<br> <span class="grad">Client-first by instinct.</span></h1>
-      <p class="subhead">I'm Mohamed Uwais — a Toronto-based client relations professional working toward the CFA designation, with hands-on experience across customer service, research, and finance.</p>
+      <h1 class="headline">Mohamed Uwais</h1>
+      <p class="motto">Analytical by training. <span class="grad">Client-first by instinct.</span></p>
+      <p class="subhead">A Toronto-based client relations professional working toward the CFA designation, with hands-on experience across customer service, research, and finance.</p>
       <div class="hero-ctas">
-        <a class="btn btn-primary" href="#work">See my work</a>
+        <a class="btn btn-primary" href="#projects">See my projects</a>
         <a class="btn btn-ghost" href="#contact">Get in touch</a>
-      </div>
-
-      <div class="stat-row">
-        <div class="stat">
-          <div class="num">CIRE</div>
-          <div class="lbl">Canadian Investment Regulatory Exam, 2026</div>
-        </div>
-        <div class="stat">
-          <div class="num">ECBA</div>
-          <div class="lbl">Entry Certificate in Business Analysis, 2026</div>
-        </div>
-        <div class="stat">
-          <div class="num">CFA</div>
-          <div class="lbl">Candidate — in progress</div>
-        </div>
       </div>
     </div>
   </header>
@@ -383,19 +391,34 @@
 
 <section id="about">
   <div class="wrap">
-    <div class="section-tag">About</div>
-    <h2 class="section-title">Grounded in client service, moving into investment management and financial services.</h2>
-    <div class="about-grid">
-      <div>
-        <p>I currently work as a Client Relationship Associate & Research Analyst at Dreamhouse Real Estate, where I combine direct client-facing work with research support. Before that, I spent over a year as a Customer Service Representative with the City of Toronto, building a foundation in resolving problems clearly and reliably for the public.</p>
-        <p>Alongside my BBA from Annamalai University, I hold a Diploma in Computer Programming – Software Development from Seneca Polytechnic — which is part of why this site exists as code I built myself rather than a template. I'm now working toward the CFA designation as I move deeper into investment research and financial services.</p>
+    <h2 class="section-title">About me</h2>
+    <p class="section-sub">Grounded in client service, moving into investment management and financial services.</p>
+    <div class="about-text">
+      <p>I currently work as a Client Relationship Associate & Research Analyst at Dreamhouse Real Estate, where I combine direct client-facing work with research support. Before that, I worked as a Customer Service Representative with the City of Toronto, building a foundation in resolving problems clearly and reliably for the public.</p>
+      <p>I studied both business and software development — which is part of why this site exists as code I built myself rather than a template. I'm now working toward the CFA designation as I move deeper into investment research and financial services.</p>
+    </div>
+  </div>
+</section>
+
+<section id="certifications">
+  <div class="wrap">
+    <h2 class="section-title">Certifications</h2>
+    <p class="section-sub">Industry credentials in investment regulation and business analysis.</p>
+    <div class="cert-grid">
+      <div class="cert">
+        <div class="code">CIRE</div>
+        <div class="full">Canadian Investment Regulatory Exam</div>
+        <span class="status">Earned · 2026</span>
       </div>
-      <div class="creds">
-        <div class="cred"><span class="name">BBA</span><span class="meta">Annamalai University, 2022–2025</span></div>
-        <div class="cred"><span class="name">Diploma, Software Development</span><span class="meta">Seneca Polytechnic, 2023–2025</span></div>
-        <div class="cred"><span class="name">CIRE Certification</span><span class="meta">2026</span></div>
-        <div class="cred"><span class="name">ECBA</span><span class="meta">2026</span></div>
-        <div class="cred"><span class="name">CFA Program</span><span class="meta">In progress</span></div>
+      <div class="cert">
+        <div class="code">ECBA</div>
+        <div class="full">Entry Certificate in Business Analysis</div>
+        <span class="status">Earned · 2026</span>
+      </div>
+      <div class="cert">
+        <div class="code">CFA</div>
+        <div class="full">Chartered Financial Analyst Program</div>
+        <span class="status progress">Candidate · In progress</span>
       </div>
     </div>
   </div>
@@ -403,8 +426,8 @@
 
 <section id="experience">
   <div class="wrap">
-    <div class="section-tag">Experience</div>
-    <h2 class="section-title">Where I've worked.</h2>
+    <h2 class="section-title">Experience</h2>
+    <p class="section-sub">Where I've worked.</p>
     <div class="timeline">
       <div class="tl-item">
         <div class="tl-date">Sept 2025 — Present</div>
@@ -426,24 +449,47 @@
   </div>
 </section>
 
-<section id="work">
+<section id="education">
   <div class="wrap">
-    <div class="section-tag">Portfolio</div>
-    <h2 class="section-title">Tools & projects.</h2>
+    <h2 class="section-title">Education</h2>
+    <p class="section-sub">Business and technology foundations.</p>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-date">2023 — 2025</div>
+        <div>
+          <div class="tl-role">Diploma, Computer Programming – Software Development</div>
+          <div class="tl-org">Seneca Polytechnic</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2022 — 2025</div>
+        <div>
+          <div class="tl-role">Bachelor of Business Administration (BBA)</div>
+          <div class="tl-org">Annamalai University</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <h2 class="section-title">Projects</h2>
+    <p class="section-sub">Tools and analysis I've built — click through to try them.</p>
     <div class="card-grid">
       <div class="proj-card">
         <a class="thumb" href="fire-calculator.html"><img src="fire-calculator-preview.png" width="720" height="480" loading="lazy" alt="Preview of the FIRE Number Calculator inputs"></a>
         <span class="tag">Interactive tool</span>
         <h3>FIRE Number Calculator</h3>
-        <p>A calculator that estimates the portfolio size needed for financial independence, projects a savings timeline, and illustrates generic model asset allocations by risk profile — built end-to-end in HTML, CSS, and JavaScript.</p>
-        <a class="link" href="fire-calculator.html">Launch the calculator →</a>
+        <p>A calculator that estimates the portfolio size needed for financial independence, projects an inflation-adjusted savings timeline with a range of outcomes, and illustrates generic model asset allocations — built end-to-end in HTML, CSS, and JavaScript.</p>
+        <a class="btn btn-primary" href="fire-calculator.html">Open the calculator →</a>
       </div>
       <div class="proj-card">
         <a class="thumb" href="coffee-dashboard.html"><img src="coffeedashboard/dashboard.png" width="1394" height="918" loading="lazy" alt="Preview of the Coffee Sales Dashboard in Excel"></a>
         <span class="tag">Data analysis · Excel</span>
         <h3>Coffee Sales Dashboard</h3>
         <p>An interactive Excel dashboard analyzing 1,000 coffee orders from 2019–2022 — built with XLOOKUP, pivot tables, pivot charts, slicers, and a timeline to break down sales by country, product, roast, and customer.</p>
-        <a class="link" href="coffee-dashboard.html">View the project →</a>
+        <a class="btn btn-primary" href="coffee-dashboard.html">View the project →</a>
       </div>
     </div>
   </div>
@@ -451,15 +497,29 @@
 
 <section id="contact">
   <div class="wrap">
-    <div class="contact-box">
-      <div>
-        <h2>Let's connect.</h2>
-        <p>Open to conversations about client relations and investment research roles in Toronto and beyond.</p>
-      </div>
-      <div class="contact-links">
-        <a class="btn btn-primary" href="mailto:uwaismm05@gmail.com">Email me</a>
-        <a class="btn btn-ghost" href="https://www.linkedin.com/in/uwaismm/" target="_blank" rel="noopener">LinkedIn</a>
-      </div>
+    <h2 class="section-title">Contact</h2>
+    <p class="section-sub">Open to conversations about client relations and investment research roles in Toronto and beyond.</p>
+    <div class="contact-grid">
+      <a class="contact-card" href="mailto:uwaismm05@gmail.com" aria-label="Email">
+        <span class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg>
+        </span>
+        <span>
+          <span class="what">Email</span>
+          <span class="value">uwaismm05@gmail.com</span>
+        </span>
+        <span class="go">Send →</span>
+      </a>
+      <a class="contact-card" href="https://www.linkedin.com/in/uwaismm/" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <span class="icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg>
+        </span>
+        <span>
+          <span class="what">LinkedIn</span>
+          <span class="value">linkedin.com/in/uwaismm</span>
+        </span>
+        <span class="go">Connect →</span>
+      </a>
     </div>
   </div>
 </section>

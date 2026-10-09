@@ -75,6 +75,7 @@
     transition: color 0.15s ease;
   }
   .navlinks a:hover { color: var(--ink); }
+  @media (max-width: 900px) { .navlinks { gap: 18px; } .navlinks a { font-size: 0.86rem; } }
   @media (max-width: 640px) { .navlinks { display: none; } }
 
   /* Header */
@@ -251,11 +252,13 @@
 
 <nav>
   <div class="inner">
-    <a class="brand" href="index.html">UWAIS<span>.</span></a>
+    <a class="brand" href="index.html">Home<span>.</span></a>
     <ul class="navlinks">
       <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#certifications">Certifications</a></li>
       <li><a href="index.html#experience">Experience</a></li>
-      <li><a href="index.html#work">Portfolio</a></li>
+      <li><a href="index.html#education">Education</a></li>
+      <li><a href="index.html#projects">Projects</a></li>
       <li><a href="index.html#contact">Contact</a></li>
     </ul>
   </div>
@@ -263,7 +266,7 @@
 
 <header class="project">
   <div class="wrap">
-    <a class="back" href="index.html#work">← Back to portfolio</a>
+    <a class="back" href="index.html#projects">← Back to projects</a>
     <div class="tag">Data analysis · Excel</div>
     <h1>Coffee Sales Dashboard</h1>
     <p class="lede">An interactive Excel dashboard built from 1,000 coffee order records covering January 2019 to August 2022. The dataset includes customer, product, coffee type, roast type, size, country, quantity, pricing, and sales information. Slicers and a timeline filter every chart at once.</p>

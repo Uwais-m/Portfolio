@@ -20,7 +20,7 @@ positioning, working toward the CFA designation.
 
 | File | Purpose |
 |---|---|
-| `index.html` | Home page — hero, About, Experience, Portfolio, Contact |
+| `index.html` | Home page — name hero, About, Certifications, Experience, Education, Projects, Contact |
 | `fire-calculator.html` | FIRE (financial independence) calculator tool |
 | `coffee-dashboard.html` | Coffee Sales Dashboard project page (Excel screenshots + workbook download) |
 | `coffeedashboard/` | Screenshots + scrubbed `coffee-sales-dashboard.xlsx`; originals are gitignored |
@@ -102,5 +102,5 @@ Visitor IPs are stored intentionally and knowingly. `admin.html` carries
 ## Conventions
 
 - Keep pages working at phone width; the nav links hide below 640px by design.
-- New portfolio items go in the `.card-grid` in the `#work` section of `index.html`.
+- New projects go in the `.card-grid` in the `#projects` section of `index.html`.
 - Don't introduce a framework or a build step to solve a problem plain HTML handles.
