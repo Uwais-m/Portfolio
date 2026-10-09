@@ -101,6 +101,7 @@ Visitor IPs are stored intentionally and knowingly. `admin.html` carries
 
 ## Conventions
 
-- Keep pages working at phone width; the nav links hide below 640px by design.
+- Keep pages working at phone width. On `index.html`, nav links hide below 640px and a
+  menu button (top right) opens a section menu instead.
 - New projects go in the `.card-grid` in the `#projects` section of `index.html`.
 - Don't introduce a framework or a build step to solve a problem plain HTML handles.
