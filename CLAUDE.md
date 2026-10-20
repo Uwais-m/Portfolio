@@ -1,7 +1,7 @@
 # uwaism.com — personal portfolio site
 
 Personal portfolio for Mohamed Uwais (Toronto). Client relations / investment research
-positioning, working toward the CFA designation.
+positioning; CFA aspirant (not yet enrolled).
 
 ## Stack & constraints
 
@@ -93,8 +93,8 @@ Visitor IPs are stored intentionally and knowingly. `admin.html` carries
 - **The FIRE calculator is educational, never advice.** Model allocations shown by risk
   profile are generic and illustrative. The disclaimer in the footer stays. Do not turn it
   into personalized recommendations, do not name specific securities to buy, and do not
-  remove or weaken the disclaimer language. Mohamed holds the CIRE certification and is
-  pursuing the CFA — the compliance line matters.
+  remove or weaken the disclaimer language. Mohamed holds the CIRE and ECBA certifications and is
+  a CFA aspirant (not yet enrolled — never describe as a CFA candidate) — the compliance line matters.
 - The allocation percentages currently in the calculator are **placeholder textbook
   figures** and were flagged for review.
 - Contact: `uwaismm05@gmail.com`, `linkedin.com/in/uwaismm/`.
