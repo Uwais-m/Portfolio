@@ -21,6 +21,7 @@
     --accent-soft: #7C5CFC33;
     --pop: #C6FF6B;
     --pop-ink: #12180A;
+    --gutter: clamp(20px, 5vw, 96px);
   }
   * { box-sizing: border-box; }
   body {
@@ -39,8 +40,7 @@
   .mono { font-family: 'JetBrains Mono', monospace; }
   a { color: inherit; }
   img { max-width: 100%; height: auto; display: block; }
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
-  @media (max-width: 640px) { .wrap { padding: 0 16px; } }
+  .wrap { max-width: 1760px; margin: 0 auto; padding: 0 var(--gutter); }
 
   /* Nav */
   nav {
@@ -56,8 +56,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 18px 24px;
-    max-width: 1080px;
+    padding: 18px var(--gutter);
+    max-width: 1760px;
     margin: 0 auto;
   }
   .brand {
@@ -98,14 +98,14 @@
     margin-bottom: 14px;
   }
   h1 {
-    font-size: clamp(2.2rem, 5.5vw, 3.6rem);
+    font-size: clamp(2.6rem, 6vw, 5.6rem);
     font-weight: 800;
     line-height: 1.05;
     letter-spacing: -0.02em;
     margin: 0 0 20px;
   }
   .lede {
-    font-size: 1.08rem;
+    font-size: clamp(1.05rem, 1.3vw, 1.2rem);
     color: var(--ink-soft);
     line-height: 1.65;
     max-width: 62ch;
@@ -163,9 +163,10 @@
     margin-bottom: 14px;
   }
   h2 {
-    font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+    font-size: clamp(1.8rem, 3.8vw, 3rem);
     font-weight: 700;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
     margin: 0 0 32px;
   }
 
@@ -321,10 +322,13 @@
 
   footer {
     padding: 36px 0 60px;
-    text-align: center;
+    border-top: 1px solid var(--line);
     color: var(--ink-soft);
     font-size: 0.85rem;
   }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  /* keep screenshots at roughly their native size on very wide screens */
+  .hero-shot { max-width: 1400px; }
 </style>
 </head>
 <body>
@@ -346,7 +350,7 @@
 <header class="project">
   <div class="wrap">
     <a class="back" href="index.html#projects">← Back to projects</a>
-    <div class="tag">Data analysis · Excel</div>
+    <div class="tag">Excel + VBA</div>
     <h1>Coffee Sales Dashboard</h1>
     <p class="lede">An interactive Excel dashboard built from 1,000 coffee order records covering January 2019 to August 2022. The dataset includes customer, product, coffee type, roast type, size, country, quantity, pricing, and sales information. Slicers and a timeline filter every chart at once, and a VBA macro audits the raw data for quality issues.</p>
     <div class="ctas">
@@ -556,7 +560,7 @@
 </section>
 
 <footer>
-  <div class="wrap">© 2026 Mohamed Uwais · uwaism.com</div>
+  <div class="wrap"><span>© 2026 Mohamed Uwais</span><span class="mono">uwaism.com</span></div>
 </footer>
 
 <script src="tracker.js" defer></script>
