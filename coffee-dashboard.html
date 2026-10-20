@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Coffee Sales Dashboard — Mohamed Uwais</title>
-<meta name="description" content="An Excel dashboard analyzing 1,000 coffee order records from January 2019 to August 2022, built with XLOOKUP, pivot tables, pivot charts, slicers and a timeline.">
+<meta name="description" content="An Excel dashboard analyzing 1,000 coffee order records from January 2019 to August 2022, built with XLOOKUP, pivot tables, pivot charts, slicers, a timeline and a VBA data quality macro.">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,7 +38,7 @@
   h1, h2, h3, .brand { font-family: 'Sora', sans-serif; }
   .mono { font-family: 'JetBrains Mono', monospace; }
   a { color: inherit; }
-  img { max-width: 100%; display: block; }
+  img { max-width: 100%; height: auto; display: block; }
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
   @media (max-width: 640px) { .wrap { padding: 0 16px; } }
 
@@ -225,6 +225,85 @@
   }
   .note strong { color: var(--ink); }
 
+  /* Process steps */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    counter-reset: step;
+  }
+  @media (max-width: 860px) { .steps { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .steps { grid-template-columns: 1fr; } }
+  .step {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px;
+    background: var(--bg-raised);
+  }
+  .step .n {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.74rem;
+    color: var(--pop);
+    margin-bottom: 10px;
+  }
+  .step h3 { font-size: 1.05rem; margin: 0 0 8px; }
+  .step p { color: var(--ink-soft); font-size: 0.88rem; line-height: 1.55; margin: 0; }
+
+  /* Data quality */
+  .dq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+  @media (max-width: 860px) { .dq-grid { grid-template-columns: 1fr; } }
+  .dq-intro { color: var(--ink-soft); line-height: 1.65; margin: 0 0 18px; }
+  .dq-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  .dq-table th {
+    text-align: left; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--ink-soft); font-weight: 600; padding: 8px 10px; border-bottom: 1px solid var(--line);
+  }
+  .dq-table td { padding: 11px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .dq-table td.num, .dq-table th.num { text-align: right; font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
+  .dq-table tr.total td { font-weight: 600; border-bottom: none; }
+  .dq-table .flag { color: var(--pop); }
+  .dq-table .clean { color: var(--ink-muted); }
+  .dq-table .sub { display: block; color: var(--ink-muted); font-size: 0.78rem; margin-top: 2px; }
+  .dq-read { margin-top: 22px; display: flex; flex-direction: column; gap: 12px; }
+
+  /* Downloads */
+  .downloads {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  @media (max-width: 760px) { .downloads { grid-template-columns: 1fr; } }
+  .dl-card {
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 26px;
+    background: var(--bg-raised);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .dl-card .ext {
+    align-self: flex-start;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    padding: 3px 10px;
+    border-radius: 6px;
+    color: var(--pop);
+    background: #C6FF6B14;
+    border: 1px solid #C6FF6B33;
+  }
+  .dl-card .ext.macro { color: #B3A1FF; background: var(--accent-soft); border-color: #7C5CFC55; }
+  .dl-card h3 { font-size: 1.2rem; margin: 4px 0 0; }
+  .dl-card p { color: var(--ink-soft); font-size: 0.9rem; line-height: 1.6; margin: 0; }
+  .dl-card ul { color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6; margin: 0; padding-left: 18px; flex-grow: 1; }
+  .dl-card .btn { align-self: flex-start; margin-top: 8px; }
+  .dl-card .size { font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; color: var(--ink-muted); }
+
   .download-box {
     display: flex;
     justify-content: space-between;
@@ -269,9 +348,9 @@
     <a class="back" href="index.html#projects">← Back to projects</a>
     <div class="tag">Data analysis · Excel</div>
     <h1>Coffee Sales Dashboard</h1>
-    <p class="lede">An interactive Excel dashboard built from 1,000 coffee order records covering January 2019 to August 2022. The dataset includes customer, product, coffee type, roast type, size, country, quantity, pricing, and sales information. Slicers and a timeline filter every chart at once.</p>
+    <p class="lede">An interactive Excel dashboard built from 1,000 coffee order records covering January 2019 to August 2022. The dataset includes customer, product, coffee type, roast type, size, country, quantity, pricing, and sales information. Slicers and a timeline filter every chart at once, and a VBA macro audits the raw data for quality issues.</p>
     <div class="ctas">
-      <a class="btn btn-primary" href="coffeedashboard/coffee-sales-dashboard.xlsx" download>Download the workbook (.xlsx)</a>
+      <a class="btn btn-primary" href="#downloads">Download the files ↓</a>
       <a class="btn btn-ghost" href="#findings">Key findings ↓</a>
     </div>
 
@@ -292,6 +371,35 @@
     <figcaption>The full dashboard. Click to open full size.</figcaption>
   </figure>
 </div>
+
+<section id="process">
+  <div class="wrap">
+    <div class="section-tag">Process</div>
+    <h2>How I built it</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="n">01 · Combine</div>
+        <h3>Join the tables</h3>
+        <p>Pulled customer details and product details from separate sheets into each order row with XLOOKUP, and calculated sales per line (unit price × quantity).</p>
+      </div>
+      <div class="step">
+        <div class="n">02 · Analyze</div>
+        <h3>Summarize with pivots</h3>
+        <p>Built pivot tables for sales over time, by country, by coffee type, roast and size, and for the top five customers.</p>
+      </div>
+      <div class="step">
+        <div class="n">03 · Visualize</div>
+        <h3>Build the dashboard</h3>
+        <p>Turned the pivots into charts on one dashboard sheet, then connected slicers and a timeline so every chart filters together.</p>
+      </div>
+      <div class="step">
+        <div class="n">04 · Validate</div>
+        <h3>Audit with a macro</h3>
+        <p>Wrote a VBA macro that checks every order row for missing, duplicate and invalid values and logs each problem to an Exceptions sheet.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section id="findings">
   <div class="wrap">
@@ -352,6 +460,10 @@
         <div class="name">Data cleaning &amp; formatting</div>
         <div class="desc">Organized the raw order data and calculated sales for each line item.</div>
       </div>
+      <div class="skill">
+        <div class="name">VBA macro (data validation)</div>
+        <div class="desc">Automated a data quality audit across all 1,000 rows — see the results below.</div>
+      </div>
     </div>
   </div>
 </section>
@@ -377,22 +489,68 @@
   </div>
 </section>
 
-<section>
+<section id="quality">
   <div class="wrap">
-    <div class="note">
-      <strong>A note on the data:</strong> the workbook has 1,000 order rows but 957 unique Order IDs, because some orders contain more than one product. Each row is a line item, so totals are summed across line items rather than counted per order. Customer names and contact details in the dataset are sample data, not real people.
+    <div class="section-tag">Data quality</div>
+    <h2>Auditing the data with a VBA macro</h2>
+    <div class="dq-grid">
+      <div>
+        <p class="dq-intro">Before trusting the dashboard, I wrote a macro (<span class="mono">CheckDataQuality</span>) that reads every row of the orders sheet, runs five checks, and writes each problem — row number, Order ID and reason — to a new <strong>Exceptions</strong> sheet. It finds columns by their header names, so it keeps working if the column order changes.</p>
+        <table class="dq-table">
+          <thead><tr><th>Check</th><th class="num">Issues</th></tr></thead>
+          <tbody>
+            <tr><td>Missing email address<span class="sub">Customer email blank after the lookup</span></td><td class="num flag">206</td></tr>
+            <tr><td>Duplicate order line<span class="sub">Same Order ID and same Product ID twice</span></td><td class="num flag">1</td></tr>
+            <tr><td>Quantity not a number, zero or negative</td><td class="num clean">0</td></tr>
+            <tr><td>Order date missing or invalid</td><td class="num clean">0</td></tr>
+            <tr><td>Order date in the future</td><td class="num clean">0</td></tr>
+            <tr class="total"><td>Total · 1,000 rows checked</td><td class="num">207</td></tr>
+          </tbody>
+        </table>
+        <div class="dq-read">
+          <div class="note"><strong>What the results mean:</strong> the 207 issues sit on 200 different orders. Missing emails don't change any sales figures, but they matter for customer follow-up and loyalty marketing. Quantities and dates were all clean, so the totals on the dashboard rest on valid numbers.</div>
+          <div class="note"><strong>The duplicate:</strong> order NOP-21394-646 lists the same product (L-D-2.5) on two lines, with quantities of 2 and 3. That's likely one purchase of 5 split in two — worth merging so per-product line counts aren't inflated.</div>
+          <div class="note"><strong>Also noted:</strong> the workbook has 1,000 order rows but 957 unique Order IDs, because some orders contain more than one product. Each row is a line item, so totals are summed across line items. Customer names and contact details are sample data, not real people.</div>
+        </div>
+      </div>
+      <figure>
+        <a href="coffeedashboard/data-quality-macro.png" target="_blank" rel="noopener">
+          <div class="shot"><img src="coffeedashboard/data-quality-macro.png" width="1400" height="744" loading="lazy" alt="The Excel VBA editor showing the CheckDataQuality macro, with a result message reading: Checked 1,000 rows. 207 issues found."></div>
+        </a>
+        <figcaption>The macro in the VBA editor, and its result: 1,000 rows checked, 207 issues found.</figcaption>
+      </figure>
     </div>
   </div>
 </section>
 
-<section>
+<section id="downloads">
   <div class="wrap">
-    <div class="download-box">
-      <div>
-        <h2>Explore it yourself</h2>
-        <p>Download the workbook and open it in Excel to use the slicers and timeline, and to see the formulas and pivot tables behind the dashboard.</p>
+    <div class="section-tag">Downloads</div>
+    <h2>Explore it yourself</h2>
+    <div class="downloads">
+      <div class="dl-card">
+        <span class="ext">.xlsx</span>
+        <h3>Dashboard workbook</h3>
+        <p>The dashboard, pivot tables and formulas. No macros, so it opens anywhere without warnings.</p>
+        <ul>
+          <li>Use the slicers and timeline to filter every chart</li>
+          <li>See the XLOOKUPs and pivot tables behind it</li>
+        </ul>
+        <a class="btn btn-primary" href="coffeedashboard/coffee-sales-dashboard.xlsx" download>Download .xlsx</a>
+        <span class="size">≈ 380 KB</span>
       </div>
-      <a class="btn btn-primary" href="coffeedashboard/coffee-sales-dashboard.xlsx" download>Download .xlsx</a>
+      <div class="dl-card">
+        <span class="ext macro">.xlsm · macro-enabled</span>
+        <h3>Workbook + data quality macro</h3>
+        <p>Everything in the dashboard workbook, plus the VBA macro and the Exceptions sheet it produced.</p>
+        <ul>
+          <li>Excel will show a security warning — click <strong>Enable Content</strong> to run the macro</li>
+          <li>Run <strong>CheckDataQuality</strong> from View → Macros (Windows) or Tools → Macro → Macros (Mac)</li>
+          <li>Needs desktop Excel; macros don't run in Excel for the web or Numbers</li>
+        </ul>
+        <a class="btn btn-ghost" href="coffeedashboard/coffee-sales-dashboard-macro.xlsm" download>Download .xlsm</a>
+        <span class="size">≈ 400 KB · the macro only reads the sheet and writes the Exceptions tab</span>
+      </div>
     </div>
   </div>
 </section>

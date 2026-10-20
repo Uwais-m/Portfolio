@@ -23,7 +23,7 @@ positioning, working toward the CFA designation.
 | `index.html` | Home page — name hero, About, Certifications, Experience, Education, Projects, Contact |
 | `fire-calculator.html` | FIRE (financial independence) calculator tool |
 | `coffee-dashboard.html` | Coffee Sales Dashboard project page (Excel screenshots + workbook download) |
-| `coffeedashboard/` | Screenshots + scrubbed `coffee-sales-dashboard.xlsx`; originals are gitignored |
+| `coffeedashboard/` | Screenshots + scrubbed `coffee-sales-dashboard.xlsx` and macro-enabled `coffee-sales-dashboard-macro.xlsm` (VBA `CheckDataQuality`); originals are gitignored |
 | `fire-calculator-preview.png` | Thumbnail for the FIRE card in the Portfolio grid |
 | `admin.html` | Private analytics dashboard, passphrase-gated, not linked in nav |
 | `tracker.js` | Fires one beacon per page load to the Cloudflare Worker |
