@@ -25,6 +25,9 @@
     --accent-soft: #7C5CFC33;
     --pop: #C6FF6B;
     --pop-ink: #12180A;
+    /* page gutters: wider on the left at desktop sizes to make room for the section rail */
+    --gutter-l: clamp(20px, 5vw, 72px);
+    --gutter-r: clamp(20px, 5vw, 72px);
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; scroll-padding-top: 90px; }
@@ -43,7 +46,8 @@
   h1, h2, h3, .brand { font-family: 'Sora', sans-serif; }
   .mono { font-family: 'JetBrains Mono', monospace; }
   a { color: inherit; }
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  .wrap { max-width: 1760px; margin: 0 auto; padding: 0 var(--gutter-r) 0 var(--gutter-l); }
+  @media (min-width: 1240px) { :root { --gutter-l: 120px; --gutter-r: 96px; } }
 
   /* Nav */
   nav {
@@ -59,8 +63,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 18px 24px;
-    max-width: 1080px;
+    padding: 18px var(--gutter-r) 18px var(--gutter-l);
+    max-width: 1760px;
     margin: 0 auto;
   }
   .brand {
@@ -239,11 +243,11 @@
   @media (min-width: 1000px) {
     .hero-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 340px;
+      grid-template-columns: minmax(0, 1fr) 380px;
       gap: 56px;
       align-items: center;
     }
-    .hero-grid h1.headline { font-size: clamp(3rem, 5.6vw, 4.6rem); }
+    .hero-grid h1.headline { font-size: clamp(3.2rem, 6.6vw, 7rem); }
     .tearsheet { display: block; }
   }
   .tearsheet {
@@ -446,9 +450,10 @@
   section { padding: 90px 0; border-top: 1px solid var(--line); }
   @media (max-width: 640px) { section { padding: 64px 0; } }
   h2.section-title {
-    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-size: clamp(2rem, 4.4vw, 3.4rem);
     font-weight: 700;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
     margin: 0 0 10px;
     display: flex;
     align-items: center;
@@ -464,7 +469,7 @@
   }
   .section-sub {
     color: var(--ink-soft);
-    font-size: 1rem;
+    font-size: clamp(1rem, 1.3vw, 1.15rem);
     line-height: 1.6;
     margin: 0 0 36px;
     max-width: 60ch;
@@ -602,10 +607,11 @@
 
   footer {
     padding: 36px 0 60px;
-    text-align: center;
+    border-top: 1px solid var(--line);
     color: var(--ink-soft);
     font-size: 0.85rem;
   }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 </style>
 </head>
 <body>
@@ -841,7 +847,7 @@
 </section>
 
 <footer>
-  <div class="wrap">© 2026 Mohamed Uwais · uwaism.com</div>
+  <div class="wrap"><span>© 2026 Mohamed Uwais</span><span class="mono">uwaism.com</span></div>
 </footer>
 
 <script>
